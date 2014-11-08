@@ -1,0 +1,14 @@
+{
+  "name": "p2dv.in",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "connect-mongo": "^0.4.1",
+    "ejs": "*",
+    "express": "3.18.2",
+    "mongoose": "^3.8.18"
+  }
+}

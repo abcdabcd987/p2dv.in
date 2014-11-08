@@ -1,0 +1,23 @@
+<% include head %>
+<form class="form-signin" role="form" action="/user/login" method="post">
+        <h2 class="form-signin-heading">Welcome Back!</h2>
+        <h3>Username</h3><input type="text" class="form-control" placeholder="Username" required autofocus value="" name="name">
+        <h3>Password</h3><input type="password" class="form-control" placeholder="Password" required name="password">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+        <a class="btn btn-lg btn-default btn-block" href="/user/register">Register Now</a>
+</form>
+
+<% include foot_script %>
+<script src="/js/sha256.js"></script>
+<script>
+$('form').on('submit', function(e) {
+    var passwd = $('input[type="password"]');
+    for (var i = 0; i < passwd.size(); ++i) {
+      var current = passwd.get(i);
+      var tohash = '<%= settings.frontSalt %>' + current.value;
+      current.value = CryptoJS.SHA256(tohash);
+    }
+    return true;
+});
+</script>
+<% include foot_close %>

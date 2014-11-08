@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= typeof(title) === 'undefined' ? '' : title + ' - ' %><%= settings.websiteName %></title>
+    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/layout.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><%= settings.websiteName %></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/ai/upload">Upload AI</a></li>
+          </ul>
+          <div class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav">
+            <% if (user.isLogin) { %>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hi, <strong><%= user.name %></strong> <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/goods/new">Add a goods</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/user/logout">Logout</a></li>
+                </ul>
+              </li>
+            <% } else { %>
+              <li><a href="/user/login">Login</a></li>
+              <li><a href="/user/register">Register</a></li>
+            <% } %>
+            </ul>
+          </div>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    <div class="container">
+    <% if (locals.message) { %>
+      <div class="alert alert-danger">
+        <strong>oops...</strong>
+        <ul>
+        <% for (var i = 0; i < locals.message.length; ++i) { %>
+          <li><%= locals.message[i] %></li>
+        <% } %>
+        </ul>
+      </div>
+    <% } %>
