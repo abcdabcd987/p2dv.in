@@ -17,16 +17,16 @@ class Daemon:
     def Run(self):
         self._initDB();
         while True:
-            for ai in self.db.ais.find({ 'status': 'Pending' }).sort({'_id':-1}):
+            for ai in self.db.ais.find({ 'status': 'Pending' }).sort('_id', 1):
                 self._build(ai)
-            for battle in self.db.records.find({ 'status': 'Pending' }).sort({'_id':-1}):
+            for battle in self.db.records.find({ 'status': 'Pending' }).sort('_id', 1):
                 self._battle(battle)
 
     ###### Task 1: Unzip & Compile
     def _addTask(self, ai0):
         print '      Arranging battles for the AI...'
         tasks = []
-        for ai1 in self.db.ais.find({ 'status': 'Available' }):
+        for ai1 in self.db.ais.find({ 'status': 'Available' }).sort('_id', -1):
             info = {
                 'user0'     : ai0['user'],
                 'name0'     : '',
@@ -35,7 +35,13 @@ class Daemon:
                 'name1'     : '',
                 'idOfUser1' : ai1['idOfUser'],
                 'status'    : 'Pending',
+                'step'      : 0,
+                'result'    : -1,
+                'winnerId'  : ai0['_id'],
+                'loserId'   : ai1['_id'],
+                'ids'       : list(),
                 'winner'    : {},
+                'loser'     : {},
                 'log'       : '',
                 'submitDate': datetime.now(),
                 'runDate'   : datetime.now()
@@ -79,7 +85,10 @@ class Daemon:
         doc_rec = {'$set':{
             'name0'  : result['user'][0],
             'name1'  : result['user'][1],
+            'step'   : result['total'],
             'status' : 'Finished',
+            'ids'    : [ai0['_id'], ai1['_id']],
+            'result' : result['result'],
             'log'    : json.dumps(result, indent=2),
             'runDate': datetime.now()
         }}
@@ -91,10 +100,18 @@ class Daemon:
             # if ai1 won:
             doc_ai0['$inc'] = {'lose':1}
             doc_ai1['$inc'] = {'win' :1}
+            doc_rec['$set']['winnerId'] = ai1['_id']
+            doc_rec['$set']['loserId']  = ai0['_id']
+            doc_rec['$set']['winner'] = { 'name': ai1['name'], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
+            doc_rec['$set']['loser']  = { 'name': ai0['name'], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
         else:
             # if ai0 won:
             doc_ai0['$inc'] = {'win' :1}
             doc_ai1['$inc'] = {'lose':1}
+            doc_rec['$set']['winnerId'] = ai0['_id']
+            doc_rec['$set']['loserId']  = ai1['_id']
+            doc_rec['$set']['winner'] = { 'name': ai0['name'], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
+            doc_rec['$set']['loser']  = { 'name': ai1['name'], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
 
         # Update documents
         self.db.ais.update({'_id':ai0['_id']}, doc_ai0)

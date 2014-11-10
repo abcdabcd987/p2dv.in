@@ -9,7 +9,7 @@ var schema = new Schema({
     draw: { type: Number, default: 0 },
     lose: { type: Number, default: 0 },
     status: { type: String, default: "Pending" },
-    buildInfo: { type: String },
+    buildInfo: { type: String, default: '' },
     absPath: { type: String },
 });
 
@@ -21,3 +21,44 @@ module.exports.getidOfUser = function(user, cb) {
     	cb(count+1);
     });
 };
+
+var ObjectId = require('mongoose').Types.ObjectId;
+var Record = require('./record');
+
+module.exports.getFullStatus = function(id, cb) {
+    module.exports.findOne({'_id':ObjectId(id)}, function(err, ai) {
+        if (err) {
+            console.log(err);
+        }
+        if (!ai) {
+            cb(null);
+            return;
+        }
+        var info = {
+            ai: ai,
+            wins: [],
+            lose: [],
+            draw: []
+        };
+        Record.find({ 'status': 'Finished', '$or': [
+            { 'winnerId': ai._id },
+            { 'loserId':  ai._id },
+            { 'result': 2, 'ids': ai._id }
+        ]}, function(err, docs) {
+            if (err) {
+                console.log(err);
+            }
+            for (var i = 0; i < docs.length; ++i) {
+                docs[i].log = '';
+                if (docs[i].winnerId.equals(ai._id)) {
+                    info.wins.push(docs[i]);
+                } else if (docs[i].loserId.equals(ai._id)) {
+                    info.lose.push(docs[i]);
+                } else {
+                    info.draw.push(docs[i]);
+                }
+            }
+            cb(info);
+        })
+    })
+}

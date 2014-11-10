@@ -75,3 +75,21 @@ exports.execUpload = function(req, res) {
         });
     });
 };
+
+exports.showStatus = function(req, res) {
+    var id = req.param('id');
+    AI.getFullStatus(id, function(doc) {
+        if (!doc) {
+            res.send('404 Not Found!');
+            return;
+        }
+
+        var info = utility.prepareRenderMessage(req);
+        info.title = 'AI Status';
+        info.ai = doc.ai;
+        info.wins = doc.wins;
+        info.lose = doc.lose;
+        info.draw = doc.draw;
+        return res.render('ai_status', info);
+    })
+}

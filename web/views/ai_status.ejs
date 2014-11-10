@@ -1,0 +1,94 @@
+<% include head %>
+
+<h1>AI Status <small><%= ai.name %> of <%= ai.user %></small></h1>
+<dl class="dl-horizontal">
+  <dt>Code Name</dt><dd><%= ai.name %></dd>
+  <dt>User (Times of Submit)</dt><dd><%= ai.user %> (<%= ai.idOfUser %>)</dd>
+  <dt>Submit Date</dt><dd><%= ai.uploadDate %></dd>
+  <% if (ai.status === 'Pending') { %>
+    <dt>Status</dt><dd><span class="label label-default"><%= ai.status %></span></dd>
+  <% } else if (ai.status === 'Available') { %>
+    <dt>Status</dt><dd><span class="label label-success"><%= ai.status %></span></dd>
+  <% } else { %>
+    <dt>Status</dt><dd><span class="label label-danger"><%= ai.status %></span></dd>
+  <% } %>
+</dl>
+
+<h2>Win <span class="badge"><%= ai.win %></span></h2>
+<table class="table table-hover table-striped">
+<thead>
+  <tr class="active">
+    <td>AI 1</td>
+    <td>AI 2</td>
+    <td>Step</td>
+    <td>Date</td>
+    <td></td>
+  </tr>
+</thead>
+<tbody>
+<% for (var i = 0; i < wins.length; ++i) { %>
+<%   var rec = wins[i]; %>
+  <tr class="success">
+    <td><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
+    <td><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
+    <td><%= rec.step %></td>
+    <td><%= rec.runDate %></td>
+    <td><a href="/demo/<%= rec._id %>" target="_blank">(Demo)</a></td>
+  </tr>
+<% } %>
+</tbody>
+</table>
+
+<h2>Lose <span class="badge"><%= ai.lose %></span></h2>
+<table class="table table-hover table-striped">
+<thead>
+  <tr class="active">
+    <td>AI 1</td>
+    <td>AI 2</td>
+    <td>Step</td>
+    <td>Date</td>
+    <td></td>
+  </tr>
+</thead>
+<tbody>
+<% for (var i = 0; i < lose.length; ++i) { %>
+<%   var rec = lose[i]; %>
+  <tr class="danger">
+    <td><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
+    <td><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
+    <td><%= rec.step %></td>
+    <td><%= rec.runDate %></td>
+    <td><a href="/demo/<%= rec._id %>" target="_blank">(Demo)</a></td>
+  </tr>
+<% } %>
+</tbody>
+</table>
+
+<h2>Draw <span class="badge"><%= ai.draw %></span></h2>
+<table class="table table-hover table-striped">
+<thead>
+  <tr class="active">
+    <td>AI 1</td>
+    <td>AI 2</td>
+    <td>Step</td>
+    <td>Date</td>
+    <td></td>
+  </tr>
+</thead>
+<tbody>
+<% for (var i = 0; i < draw.length; ++i) { %>
+<%   var rec = draw[i]; %>
+  <tr class="warning">
+    <td><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
+    <td><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
+    <td><%= rec.step %></td>
+    <td><%= rec.runDate %></td>
+    <td><a href="/demo/<%= rec._id %>" target="_blank">(Demo)</a></td>
+  </tr>
+<% } %>
+</tbody>
+</table>
+
+<h2>Build Infomation</h2>
+<pre><%= ai.buildInfo %></pre>
+<% include foot %>

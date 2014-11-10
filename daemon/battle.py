@@ -27,7 +27,7 @@ class Battle:
         shutil.copy(self.ai1['absPath'], path.join(self.tmpdir, 'ai1'))
 
     def _runProgram(self, args):
-        time.sleep(0.5)
+        time.sleep(1)
         return subprocess.Popen(args, stdin=Battle.FNULL, stdout=Battle.FNULL, stderr=Battle.FNULL, cwd=self.tmpdir, env={'PATH':self.tmpdir})
 
     def _runBattle(self):
@@ -48,7 +48,7 @@ class Battle:
         shutil.rmtree(self.tmpdir)
 
     def _readJSON(self):
-        data = open(path.join(self.tmpdir, 'server', 'json.log')).read()
+        data = open(path.join(self.tmpdir, 'json.log')).read()
         self.json = json.loads(data)
 
     def Run(self):

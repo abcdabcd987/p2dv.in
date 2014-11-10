@@ -18,5 +18,5 @@ exports.setup = function(app) {
 
     app.get ('/ai/upload', ai.showUpload);
     app.post('/ai/upload', ai.execUpload);
-    app.get ('/ai/:id', function(req, res) { res.send(req.param('id')); });
+    app.get ('/ai/:id', ai.showStatus);
 }

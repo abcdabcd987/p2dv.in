@@ -47,7 +47,7 @@ class Prepare:
         if not self._unzip():
             result['error'] = "Unzip Failed. STDERR:\n" + self.unzip_stderr
         elif not self._compile():
-            result['error'] = 'Compile Failed. STDERR\n' + self.compile_stderr
+            result['error'] = 'Compile Failed. STDERR:\n' + self.compile_stderr
         else:
             result['status'] = 'success'
             result['abspath'] = self.abspath
