@@ -1,9 +1,9 @@
 var db = require('./db');
 var Schema = db.Schema;
 var schema = new Schema({
-    name: { type: String, default: '[Unknown]' },
     user: { type: String },
     idOfUser: { type: Number },
+    name: { type: String, default: '[Unknown]' },
     uploadDate: {type: Date, default: Date.now },
     win:  { type: Number, default: 0 },
     draw: { type: Number, default: 0 },
