@@ -1,5 +1,6 @@
 var ai = require('./ai');
 var user = require('./user');
+var demo = require('./demo');
 var utility = require('./utility');
 
 function showIndex(req, res) {
@@ -19,4 +20,7 @@ exports.setup = function(app) {
     app.get ('/ai/upload', ai.showUpload);
     app.post('/ai/upload', ai.execUpload);
     app.get ('/ai/:id', ai.showStatus);
+
+    app.get ('/json/:id.json', demo.getJSON);
+    app.get ('/demo/:id', demo.showDemo);
 }

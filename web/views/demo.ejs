@@ -1,0 +1,8 @@
+<% include head %>
+<table id="chess-board">
+</table>
+<div id="float-chess" class="hidden"></div>
+<% include foot_script %>
+<script src="/js/demo.js"></script>
+<script>ChessDemo("/json/<%= rec._id %>.json");</script>
+<% include foot_close %>

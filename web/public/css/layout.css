@@ -47,3 +47,90 @@ textarea, input[type="text"], input[type="password"] {
   color: #777;
   border-top: 1px solid #e5e5e5;
 }
+
+
+/* ==================== Chess Board ==================== */
+
+#chess-board {
+  border: 5px solid #eee;
+}
+
+#chess-board td {
+  height: 64px;
+  width: 64px;
+  border: 5px solid #eee;
+}
+
+#float-chess {
+  height: 64px;
+  width: 64px;
+  border: 5px solid #eee;
+}
+
+.hidden {
+  display: none;
+}
+
+#float-chess {
+  position: absolute;
+}
+
+/*#box-3-1, #box-3-2, #box-4-1, #box-4-2, #box-5-1, #box-5-2,
+#box-3-4, #box-3-5, #box-4-4, #box-4-5, #box-5-4, #box-5-5 {
+  background: #eee;
+}*/
+
+.river {
+  background: #eee;
+}
+
+#box-3-1, #box-3-4 { 
+  border-bottom: 5px solid #eee;
+  border-right: 5px solid #eee;
+}
+
+#box-3-2, #box-3-5 { 
+  border-bottom: 5px solid #eee;
+  border-left: 5px solid #eee;
+}
+
+#box-4-1, #box-4-4 { 
+  border-top: 5px solid #eee;
+  border-bottom: 5px solid #eee;
+  border-right: 5px solid #eee;
+}
+
+#box-4-2, #box-4-5 { 
+  border-top: 5px solid #eee;
+  border-bottom: 5px solid #eee;
+  border-left: 5px solid #eee;
+}
+
+#box-5-1, #box-5-4 { 
+  border-top: 5px solid #eee;
+  border-right: 5px solid #eee;
+}
+
+#box-5-2, #box-5-5 { 
+  border-top: 5px solid #eee;
+  border-left: 5px solid #eee;
+}
+
+.img-trap { background: url(/images/trap.png); }
+.img-cave { background: url(/images/cave.png); }
+.img-0 { background: url(/images/0.png); }
+.img-1 { background: url(/images/1.png); }
+.img-2 { background: url(/images/2.png); }
+.img-3 { background: url(/images/3.png); }
+.img-4 { background: url(/images/4.png); }
+.img-5 { background: url(/images/5.png); }
+.img-6 { background: url(/images/6.png); }
+.img-7 { background: url(/images/7.png); }
+
+.ai0 {
+  background-color: #10765C;
+}
+
+.ai1 {
+  background-color: #764610;
+}
