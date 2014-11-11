@@ -14,6 +14,7 @@ function ChessDemo(jsonURL) {
     }
 
     function drawTable() {
+        var table = $('<table id="chess-board">');
         for (var i = 8; i >= 0; --i) {
             var tr = $('<tr id="row-' + i + '">');
             for (var j = 0; j < 7; ++j) {
@@ -22,8 +23,10 @@ function ChessDemo(jsonURL) {
                 td.data('col', j);
                 tr.append(td);
             }
-            board.append(tr);
+            table.append(tr);
         }
+        board.replaceWith(table);
+        board = $('#chess-board');
     }
 
     function putChess() {
@@ -93,6 +96,8 @@ function ChessDemo(jsonURL) {
     }
 
     function playDemo() {
+        drawTable();
+        putChess();
         $('#btn-playdemo').prop('disabled', true);
 
         function loop(i, data) {

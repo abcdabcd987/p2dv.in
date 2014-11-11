@@ -44,7 +44,7 @@ module.exports.getFullStatus = function(id, cb) {
             { 'winnerId': ai._id },
             { 'loserId':  ai._id },
             { 'result': 2, 'ids': ai._id }
-        ]}, function(err, docs) {
+        ]}).sort({runDate:-1}).exec(function(err, docs) {
             if (err) {
                 console.log(err);
             }

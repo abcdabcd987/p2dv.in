@@ -8,8 +8,10 @@ var User = require('../models/user');
 var processUpload = function(ai) {
     var type = ai.type;
     var size = ai.size;
+    var ext = ai.path.substr()
 
-    if (type !== 'application/zip' || !size || size > 50*1024*1024) {
+    if ((type !== 'application/zip' && type === 'application/octet-stream' && ai.path.substr(-4, 4) !== '.zip') || 
+        !size || size > 1*1024*1024) {
         try {
             fs.unlinkSync(ai.path);
         } catch (err) {

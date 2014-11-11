@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.bodyParser({uploadDir: '/Users/abcdabcd987/Developer/tmp/p2dv.in'}));
 app.use(express.methodOverride());
-app.use(express.session({ secret: settings.secret }));
+app.use(express.session(settings.sessionDb));
 app.use(function(req, res, next) {
     utility.initSession(req);
     next();
