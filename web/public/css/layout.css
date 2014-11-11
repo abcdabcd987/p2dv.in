@@ -134,3 +134,11 @@ textarea, input[type="text"], input[type="password"] {
 .ai1 {
   background-color: #764610;
 }
+
+#demo-text {
+  line-height: 2em;
+  height: 3em;
+  padding: 0.5em;
+  margin-top: 0.5em;
+  width: 453px;
+}

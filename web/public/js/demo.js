@@ -1,12 +1,12 @@
 function ChessDemo(jsonURL) {
-    // Constants:
-    var MOVE_DURATION      = 50;
-    var ANIMATION_INTERVAL = 100; // ANIMATION_INTERVAL > MOVE_DURATION
+    // Global Constants:
+    ANIMATION_INTERVAL = 200;
 
     // Variables:
     var board = $('#chess-board');
     var floatChess = $('#float-chess');
     var data = null;
+    var that = this;
 
     // Functions:
     function getBox(i, j) {
@@ -79,7 +79,7 @@ function ChessDemo(jsonURL) {
             source.attr('class', '');
         }
 
-        floatChess.animate(target.offset(), MOVE_DURATION, function() {
+        floatChess.animate(target.offset(), ANIMATION_INTERVAL, function() {
             target.attr('class', floatChess.attr('class'));
             floatChess.addClass('hidden');
         });
@@ -88,25 +88,49 @@ function ChessDemo(jsonURL) {
     function getData() {
         $.getJSON(jsonURL, function(dt) {
             data = dt;
+            $('#btn-playdemo').prop('disabled', false).html('Play Demo');
         });
     }
 
     function playDemo() {
-        function loop(i, data, ANIMATION_INTERVAL) {
-            console.log(i, ANIMATION_INTERVAL);
-            if (i === data.step.length) return;
-            var step = data.step[i];
-            moveChess(step.source[0], step.source[1], step.target[0], step.target[1]);
+        $('#btn-playdemo').prop('disabled', true);
 
-            setTimeout(loop, ANIMATION_INTERVAL, i+1, data, ANIMATION_INTERVAL);
+        function loop(i, data) {
+            if (i === data.step.length) {
+                $('#btn-playdemo').prop('disabled', false);
+                $('#demo-text').attr('class', 'bg-primary').html('Done');
+                return;
+            }
+            var step = data.step[i];
+
+            if (step.player == 0) {
+                $("#demo-text").attr('class', 'bg-success');
+            } else {
+                $("#demo-text").attr('class', 'bg-warning');
+            }
+
+            if (step.valid) {
+                $("#demo-text").html('<strong>[Step ' + (i+1) + ']AI' + step.player + '</strong> Move (' + step.source[0] + ',' + step.source[1] + ') to (' + step.target[0] + ',' + step.target[1] + ')');
+                moveChess(step.source[0], step.source[1], step.target[0], step.target[1]);
+            } else {
+                $("#demo-text").html('<strong>[Step ' + (i+1) + ']AI' + step.player + '</strong> Invalid Operation!');
+            }
+
+            setTimeout(loop, ANIMATION_INTERVAL*2, i+1, data);
         }
-        setTimeout(loop, ANIMATION_INTERVAL, 0, data, ANIMATION_INTERVAL);
+        setTimeout(loop, ANIMATION_INTERVAL*2, 0, data);
+    }
+
+    function bindEvents() {
+        $("#btn-playdemo").on('click', playDemo);
+        $("#btn-speed-slow")  .on('click', function(){ANIMATION_INTERVAL=500});
+        $("#btn-speed-normal").on('click', function(){ANIMATION_INTERVAL=200});
+        $("#btn-speed-fast")  .on('click', function(){ANIMATION_INTERVAL= 50});
     }
 
     // Main:
     drawTable();
     putChess();
     getData();
-
-    setTimeout(playDemo, 500);
+    bindEvents();
 }
