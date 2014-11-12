@@ -1,0 +1,37 @@
+<% include head %>
+<h1>AI List</h1>
+<table id="ai-list-table" class="table table-hover">
+<thead>
+  <tr>
+    <td>User (Submit)</td>
+    <td>AI Name</td>
+    <td>Status</td>
+    <td>Win</td>
+    <td>Draw</td>
+    <td>Lose</td>
+    <td>Upload Date</td>
+    <td></td>
+  </tr>
+</thead>
+<tbody>
+<% for (var i = 0; i < list.length; ++i) { var ai = list[i]; %>
+  <tr>
+    <td><%= ai.user %> (<%= ai.idOfUser %>)</td>
+    <td><%= ai.name %></td>
+    <% if (ai.status === 'Unavailable')  { %>
+      <td><span class="label label-danger"><%= ai.status %></span></td>
+    <% } else if (ai.status === 'Available') { %>
+      <td><span class="label label-success"><%= ai.status %></span></td>
+    <% } else { %>
+      <td><span class="label label-default"><%= ai.status %></span></td>
+    <% } %>
+    <td><span class="label label-success"><%= ai.win %></span></td>
+    <td><span class="label label-warning"><%= ai.draw %></span></td>
+    <td><span class="label label-danger"><%= ai.lose %></span></td>
+    <td><%= ai.uploadDate %></td>
+    <td><a href="/ai/<%= ai._id %>">(Detail)</a></td>
+  </tr>
+<% } %>
+</tbody>
+</table>
+<% include foot %>

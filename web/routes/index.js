@@ -1,6 +1,6 @@
 var ai = require('./ai');
 var user = require('./user');
-var demo = require('./demo');
+var battle = require('./battle');
 var utility = require('./utility');
 
 function showIndex(req, res) {
@@ -19,8 +19,10 @@ exports.setup = function(app) {
 
     app.get ('/ai/upload', ai.showUpload);
     app.post('/ai/upload', ai.execUpload);
+    app.get ('/ai/list', ai.showList);
     app.get ('/ai/:id', ai.showStatus);
 
-    app.get ('/json/:id.json', demo.getJSON);
-    app.get ('/demo/:id', demo.showDemo);
+    app.get ('/battle/list', battle.showList);
+    app.get ('/battle/:id.json', battle.getJSON);
+    app.get ('/battle/:id', battle.showDemo);
 }

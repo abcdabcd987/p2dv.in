@@ -95,3 +95,12 @@ exports.showStatus = function(req, res) {
         return res.render('ai_status', info);
     })
 }
+
+exports.showList = function(req, res) {
+    AI.find({}).sort({_id:-1}).exec(function(err, doc) {
+        var info =utility.prepareRenderMessage(req);
+        info.title = 'AI List';
+        info.list = doc;
+        return res.render('ai_list', info);
+    });
+}

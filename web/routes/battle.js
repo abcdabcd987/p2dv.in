@@ -27,6 +27,20 @@ exports.showDemo = function(req, res) {
         var info = utility.prepareRenderMessage(req);
         info.title = "Demo";
         info.rec = doc;
-        res.render('demo', info);
+        res.render('battle_demo', info);
+    });
+};
+
+exports.showList = function(req, res) {
+    Record.find({}).select({log:0}).sort({_id:-1}).exec(function(err, doc) {
+        var info =utility.prepareRenderMessage(req);
+        info.title = 'Battle List';
+        info.list = doc;
+        info.getColor = function(result, expect) {
+            if (result === -1) return '';
+            if (result === 2) return 'warning';
+            return result === expect ? 'success' : 'danger';
+        }
+        return res.render('battle_list', info);
     });
 };

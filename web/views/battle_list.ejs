@@ -1,0 +1,33 @@
+<% include head %>
+<h1>Battle List</h1>
+<table id="battle-list-table" class="table table-hover">
+<thead>
+  <tr>
+    <td>AI 1</td>
+    <td>AI 2</td>
+    <td>Status</td>
+    <td>Step</td>
+    <td>Submit Date</td>
+    <td></td>
+  </tr>
+</thead>
+<tbody>
+<% for (var i = 0; i < list.length; ++i) { var rec = list[i]; %>
+  <tr>
+    <td class="<%= getColor(rec.result, 0) %>"><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
+    <td class="<%= getColor(rec.result, 1) %>"><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
+    <% if (rec.status === 'Running')  { %>
+      <td><span class="label label-warning"><%= rec.status %></span></td>
+    <% } else if (rec.status === 'Finished') { %>
+      <td><span class="label label-success"><%= rec.status %></span></td>
+    <% } else { %>
+      <td><span class="label label-default"><%= rec.status %></span></td>
+    <% } %>
+    <td><%= rec.status === 'Finished' ? rec.step : '' %></td>
+    <td><%= rec.submitDate %></td>
+    <td><a href="/battle/<%= rec._id %>">(Demo)</a></td>
+  </tr>
+<% } %>
+</tbody>
+</table>
+<% include foot %>
