@@ -28,9 +28,9 @@
 <tbody>
 <% for (var i = 0; i < wins.length; ++i) { %>
 <%   var rec = wins[i]; %>
-  <tr class="success">
-    <td><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
-    <td><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
+  <tr>
+    <td class="<%= rec.result==0?'success':'danger' %>"><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
+    <td class="<%= rec.result==1?'success':'danger' %>"><a href="/ai/<%= rec.ids[0] %>"><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
     <td><%= rec.step %></td>
     <td><%= rec.runDate %></td>
     <td><a href="/demo/<%= rec._id %>" target="_blank">(Demo)</a></td>
@@ -53,9 +53,9 @@
 <tbody>
 <% for (var i = 0; i < lose.length; ++i) { %>
 <%   var rec = lose[i]; %>
-  <tr class="danger">
-    <td><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
-    <td><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
+  <tr>
+    <td class="<%= rec.result==0?'success':'danger' %>"><a href="/ai/<%= rec.ids[0] %>"><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
+    <td class="<%= rec.result==1?'success':'danger' %>"><a href="/ai/<%= rec.ids[0] %>"><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
     <td><%= rec.step %></td>
     <td><%= rec.runDate %></td>
     <td><a href="/demo/<%= rec._id %>" target="_blank">(Demo)</a></td>
@@ -79,8 +79,8 @@
 <% for (var i = 0; i < draw.length; ++i) { %>
 <%   var rec = draw[i]; %>
   <tr class="warning">
-    <td><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
-    <td><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
+    <td class="warning"><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
+    <td class="warning"><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
     <td><%= rec.step %></td>
     <td><%= rec.runDate %></td>
     <td><a href="/demo/<%= rec._id %>" target="_blank">(Demo)</a></td>

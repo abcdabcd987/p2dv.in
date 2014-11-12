@@ -115,10 +115,10 @@ function ChessDemo(jsonURL) {
             }
 
             if (step.valid) {
-                $("#demo-text").html('<strong>[Step ' + (i+1) + ']AI' + step.player + '</strong> Move (' + step.source[0] + ',' + step.source[1] + ') to (' + step.target[0] + ',' + step.target[1] + ')');
+                $("#demo-text").html('<strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> Move (' + step.source[0] + ',' + step.source[1] + ') to (' + step.target[0] + ',' + step.target[1] + ')');
                 moveChess(step.source[0], step.source[1], step.target[0], step.target[1]);
             } else {
-                $("#demo-text").html('<strong>[Step ' + (i+1) + ']AI' + step.player + '</strong> Invalid Operation!');
+                $("#demo-text").html('<strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> Invalid Operation!');
             }
 
             setTimeout(loop, ANIMATION_INTERVAL*2, i+1, data);

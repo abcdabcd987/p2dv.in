@@ -92,11 +92,11 @@ class Daemon:
             'log'    : json.dumps(result, indent=2),
             'runDate': datetime.now()
         }}
-        if result == 2:
+        if result['result'] == 2:
             # if draw
             doc_ai0['$inc'] = {'draw':1}
             doc_ai1['$inc'] = {'draw':1}
-        elif result == 1:
+        elif result['result'] == 1:
             # if ai1 won:
             doc_ai0['$inc'] = {'lose':1}
             doc_ai1['$inc'] = {'win' :1}
@@ -104,7 +104,7 @@ class Daemon:
             doc_rec['$set']['loserId']  = ai0['_id']
             doc_rec['$set']['winner'] = { 'name': ai1['name'], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
             doc_rec['$set']['loser']  = { 'name': ai0['name'], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
-        else:
+        elif result['result'] == 0:
             # if ai0 won:
             doc_ai0['$inc'] = {'win' :1}
             doc_ai1['$inc'] = {'lose':1}
@@ -112,6 +112,8 @@ class Daemon:
             doc_rec['$set']['loserId']  = ai1['_id']
             doc_rec['$set']['winner'] = { 'name': ai0['name'], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
             doc_rec['$set']['loser']  = { 'name': ai1['name'], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
+        else:
+            print "!!!!!!!! UNKNOWN RESULT !!!!!!!!"
 
         # Update documents
         self.db.ais.update({'_id':ai0['_id']}, doc_ai0)
