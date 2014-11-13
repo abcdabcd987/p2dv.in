@@ -4,7 +4,7 @@
 <dl class="dl-horizontal">
   <dt>Code Name</dt><dd><%= ai.name %></dd>
   <dt>User (Times of Submit)</dt><dd><%= ai.user %> (<%= ai.idOfUser %>)</dd>
-  <dt>Submit Date</dt><dd><%= ai.uploadDate %></dd>
+  <dt>Submit Date</dt><dd><%=: ai.uploadDate | formatDate %></dd>
   <% if (ai.status === 'Pending') { %>
     <dt>Status</dt><dd><span class="label label-default"><%= ai.status %></span></dd>
   <% } else if (ai.status === 'Available') { %>
@@ -32,8 +32,8 @@
     <td class="<%= rec.result==0?'success':'danger' %>"><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
     <td class="<%= rec.result==1?'success':'danger' %>"><a href="/ai/<%= rec.ids[0] %>"><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
     <td><%= rec.step %></td>
-    <td><%= rec.runDate %></td>
-    <td><a href="/demo/<%= rec._id %>" target="_blank">(Demo)</a></td>
+    <td><%=: rec.runDate | formatDate %></td>
+    <td><a href="/battle/<%= rec._id %>" target="_blank">(Demo)</a></td>
   </tr>
 <% } %>
 </tbody>
@@ -57,7 +57,7 @@
     <td class="<%= rec.result==0?'success':'danger' %>"><a href="/ai/<%= rec.ids[0] %>"><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
     <td class="<%= rec.result==1?'success':'danger' %>"><a href="/ai/<%= rec.ids[0] %>"><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
     <td><%= rec.step %></td>
-    <td><%= rec.runDate %></td>
+    <td><%=: rec.runDate | formatDate %></td>
     <td><a href="/battle/<%= rec._id %>" target="_blank">(Demo)</a></td>
   </tr>
 <% } %>
@@ -82,8 +82,8 @@
     <td class="warning"><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
     <td class="warning"><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
     <td><%= rec.step %></td>
-    <td><%= rec.runDate %></td>
-    <td><a href="/demo/<%= rec._id %>" target="_blank">(Demo)</a></td>
+    <td><%=: rec.runDate | formatDate %></td>
+    <td><a href="/battle/<%= rec._id %>" target="_blank">(Demo)</a></td>
   </tr>
 <% } %>
 </tbody>

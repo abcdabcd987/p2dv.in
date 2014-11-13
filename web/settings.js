@@ -14,6 +14,8 @@ module.exports = {
     frontSalt: 'Your Salt for Frontend Encryption, Random String',
     databaseInfo: dbi,
     uploadPath: '/Users/abcdabcd987/Developer/tmp/p2dv.in/upload/',
+    battlePerPage: 20,
+    AIPerPage: 20,
     sessionDb: {
         secret: cookieSecret,
         store: new mongoStore(dbi)

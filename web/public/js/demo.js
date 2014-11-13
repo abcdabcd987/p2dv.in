@@ -15,6 +15,7 @@ function ChessDemo(jsonURL) {
 
     function drawTable() {
         var table = $('<table id="chess-board">');
+        table.append('<tr><td colspan="8" class="ai1 td-ai-name">AI2</td></tr>');
         for (var i = 8; i >= 0; --i) {
             var tr = $('<tr id="row-' + i + '">');
             for (var j = 0; j < 7; ++j) {
@@ -25,6 +26,7 @@ function ChessDemo(jsonURL) {
             }
             table.append(tr);
         }
+        table.append('<tr><td colspan="8" class="ai0 td-ai-name">AI1</td></tr>');
         board.replaceWith(table);
         board = $('#chess-board');
     }

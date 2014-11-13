@@ -24,10 +24,27 @@
       <td><span class="label label-default"><%= rec.status %></span></td>
     <% } %>
     <td><%= rec.status === 'Finished' ? rec.step : '' %></td>
-    <td><%= rec.submitDate %></td>
+    <td><%=: rec.submitDate | formatDate %></td>
     <td><a href="/battle/<%= rec._id %>">(Demo)</a></td>
   </tr>
 <% } %>
 </tbody>
 </table>
+
+<nav>
+  <ul class="pager">
+  <% if (page === 1) { %>
+    <li class="previous disabled"><a href="#">&larr; Newer</a></li>
+  <% } else { %>
+    <li class="previous"><a href="/battle/list?page=<%= page-1 %>">&larr; Newer</a></li>
+  <% } %>
+
+
+  <% if (page === totpage) { %>
+    <li class="next disabled"><a href="#">&rarr; Older</a></li>
+  <% } else { %>
+    <li class="next"><a href="/battle/list?page=<%= page+1 %>">&rarr; Older</a></li>
+  <% } %>
+  </ul>
+</nav>
 <% include foot %>

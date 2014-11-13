@@ -32,15 +32,22 @@ exports.showDemo = function(req, res) {
 };
 
 exports.showList = function(req, res) {
-    Record.find({}).select({log:0}).sort({_id:-1}).exec(function(err, doc) {
-        var info =utility.prepareRenderMessage(req);
-        info.title = 'Battle List';
-        info.list = doc;
-        info.getColor = function(result, expect) {
-            if (result === -1) return '';
-            if (result === 2) return 'warning';
-            return result === expect ? 'success' : 'danger';
-        }
-        return res.render('battle_list', info);
+    Record.count({}, function(err, count) {
+        var page = Number(req.query.page || '1');
+        var skip = settings.battlePerPage * (page-1);
+
+        Record.find({}).select({log:0}).sort({_id:-1}).skip(skip).limit(settings.battlePerPage).exec(function(err, doc) {
+            var info =utility.prepareRenderMessage(req);
+            info.title = 'Battle List';
+            info.list = doc;
+            info.page = page;
+            info.totpage = Math.ceil(count / settings.battlePerPage);
+            info.getColor = function(result, expect) {
+                if (result === -1) return '';
+                if (result === 2) return 'warning';
+                return result === expect ? 'success' : 'danger';
+            }
+            return res.render('battle_list', info);
+        });
     });
 };

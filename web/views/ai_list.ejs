@@ -3,12 +3,12 @@
 <table id="ai-list-table" class="table table-hover">
 <thead>
   <tr>
-    <td>User (Submit)</td>
+    <td><a href="/ai/list?sort=+user">User</a> (Submit)</td>
     <td>AI Name</td>
     <td>Status</td>
-    <td>Win</td>
-    <td>Draw</td>
-    <td>Lose</td>
+    <td><a href="/ai/list?sort=-win">Win</a></td>
+    <td><a href="/ai/list?sort=-draw">Draw</a></td>
+    <td><a href="/ai/list?sort=-lose">Lose</td>
     <td>Upload Date</td>
     <td></td>
   </tr>
@@ -28,10 +28,26 @@
     <td><span class="label label-success"><%= ai.win %></span></td>
     <td><span class="label label-warning"><%= ai.draw %></span></td>
     <td><span class="label label-danger"><%= ai.lose %></span></td>
-    <td><%= ai.uploadDate %></td>
+    <td><%=: ai.uploadDate | formatDate %></td>
     <td><a href="/ai/<%= ai._id %>">(Detail)</a></td>
   </tr>
 <% } %>
 </tbody>
 </table>
+<nav>
+  <ul class="pager">
+  <% if (page === 1) { %>
+    <li class="previous disabled"><a href="#">&larr; Newer</a></li>
+  <% } else { %>
+    <li class="previous"><a href="/ai/list?page=<%= page-1 %>&amp;sort=<%= sort %>">&larr; Newer</a></li>
+  <% } %>
+
+
+  <% if (page === totpage) { %>
+    <li class="next disabled"><a href="#">&rarr; Older</a></li>
+  <% } else { %>
+    <li class="next"><a href="/ai/list?page=<%= page+1 %>&amp;sort=<%= sort %>">&rarr; Older</a></li>
+  <% } %>
+  </ul>
+</nav>
 <% include foot %>

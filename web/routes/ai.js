@@ -97,10 +97,20 @@ exports.showStatus = function(req, res) {
 }
 
 exports.showList = function(req, res) {
-    AI.find({}).sort({_id:-1}).exec(function(err, doc) {
-        var info =utility.prepareRenderMessage(req);
-        info.title = 'AI List';
-        info.list = doc;
-        return res.render('ai_list', info);
+    AI.count({}, function(err, count) {
+        var page = Number(req.query.page || '1');
+        var skip = settings.AIPerPage * (page-1);
+        var sort = req.query.sort || '-_id';
+
+        AI.find({}).sort(sort).skip(skip).limit(settings.AIPerPage).exec(function(err, doc) {
+            var info =utility.prepareRenderMessage(req);
+            info.page = page;
+            info.totpage = Math.ceil(count / settings.AIPerPage);
+            info.sort = sort;
+
+            info.title = 'AI List';
+            info.list = doc;
+            return res.render('ai_list', info);
+        });
     });
 }

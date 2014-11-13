@@ -135,6 +135,12 @@ textarea, input[type="text"], input[type="password"] {
   background-color: #764610;
 }
 
+.td-ai-name {
+  line-height: 1.2em;
+  height: 1.2em !important;
+  text-align: center;
+}
+
 #demo-text {
   line-height: 2em;
   height: 3em;
