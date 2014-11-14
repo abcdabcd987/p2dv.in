@@ -1,7 +1,7 @@
 <% include head %>
 
 <h1>AI Status <small><%= ai.name %> of <%= ai.user %> (<%= ai.idOfUser %>)</small></h1>
-<% if (user.isLogin) { %>
+<% if (user.isLogin && ai.status === 'Available') { %>
 <!-- Button trigger modal -->
 <div>
 <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#give-battle">Start a battle!</button>

@@ -22,7 +22,7 @@
 </form>
 
 <% include foot_script %>
-<script src="/js/sha256.js"></script>
+<script src="<%= settings.staticCDN %>/js/sha256.js?v0"></script>
 <script>
 $('form').on('submit', function(e) {
     var passwd = $('input[type="password"]');

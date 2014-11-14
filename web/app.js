@@ -26,7 +26,7 @@ app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
-app.use(express.bodyParser({uploadDir: '/Users/abcdabcd987/Developer/tmp/p2dv.in'}));
+app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.session(settings.sessionDb));
 app.use(function(req, res, next) {

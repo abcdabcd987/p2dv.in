@@ -45,7 +45,7 @@
 
 <% include foot_script %>
 <% if (rec.status === 'Finished') { %>
-<script src="/js/demo.js"></script>
+<script src="<%= settings.staticCDN %>/js/demo.js"></script>
 <script>ChessDemo("<%= rec._id %>.json");</script>
 <% } %>
 <% include foot_close %>
