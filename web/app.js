@@ -15,7 +15,7 @@ var moment = require('moment');
 var app = express();
 
 ejs.filters.formatDate = function(str) {
-    return moment(str).format('YYYY-MM-DD hh:mm:ss');
+    return moment(str).format('YYYY-MM-DD HH:mm:ss');
 }
 
 // all environments
