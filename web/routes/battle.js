@@ -51,3 +51,36 @@ exports.showList = function(req, res) {
         });
     });
 };
+
+exports.execStart = function(req, res) {
+    if (!req.session.user.isLogin) return res.redirect('/user/login');
+    var ai0 = ObjectId(req.body.ai0);
+    var ai1 = ObjectId(req.body.ai1);
+    AI.findOne({_id:ai0}, function(err, doc0) {
+        if (!doc0 || doc0.user !== req.session.user.name) {
+            res.send('Permission Denied');
+            return;
+        }
+
+        AI.findOne({_id:ai1}, function(err, doc1) {
+            if (!doc1) {
+                res.send("Target AI doesn't exist");
+                return;
+            }
+
+            var info = {
+                user0: doc0.user,
+                name0: doc0.name,
+                idOfUser0: doc0.idOfUser,
+                user1: doc1.user,
+                name1: doc1.name,
+                idOfUser1: doc1.idOfUser,
+                ids: [doc0._id, doc1._id],
+            };
+            var item = new Record(info);
+            item.save(function(err, doc) {
+                return res.redirect('/battle/' + doc._id);
+            })
+        })
+    })
+}

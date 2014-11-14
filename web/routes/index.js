@@ -23,6 +23,7 @@ exports.setup = function(app) {
     app.get ('/ai/:id', ai.showStatus);
 
     app.get ('/battle/list', battle.showList);
+    app.post('/battle/start', battle.execStart);
     app.get ('/battle/:id.json', battle.getJSON);
     app.get ('/battle/:id', battle.showDemo);
 }

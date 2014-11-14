@@ -7,6 +7,8 @@
   <dt>Submit Date</dt><dd><%=: rec.submitDate | formatDate %></dd>
   <% if (rec.status === 'Pending') { %>
     <dt>Status</dt><dd><span class="label label-default"><%= rec.status %></span></dd>
+  <% } else if (rec.status === 'Running') { %>
+    <dt>Status</dt><dd><span class="label label-warning"><%= rec.status %></span></dd>
   <% } else { %>
     <dt>Battle Date</dt><dd><%=: rec.runDate | formatDate %></dd>
     <dt>Status</dt><dd><%= rec.status %></dd>
@@ -23,6 +25,7 @@
   <% } %>
 </dl>
 
+<% if (rec.status === 'Finished') { %>
 <div id="demo-info">
   <div>
     <button type="button" class="btn btn-primary" disabled id="btn-playdemo">Loading Demo...</button>
@@ -38,8 +41,11 @@
 <table id="chess-board">
 </table>
 <div id="float-chess" class="hidden"></div>
+<% } %>
 
 <% include foot_script %>
+<% if (rec.status === 'Finished') { %>
 <script src="/js/demo.js"></script>
 <script>ChessDemo("<%= rec._id %>.json");</script>
+<% } %>
 <% include foot_close %>

@@ -92,7 +92,15 @@ exports.showStatus = function(req, res) {
         info.wins = doc.wins;
         info.lose = doc.lose;
         info.draw = doc.draw;
-        return res.render('ai_status', info);
+
+        if (info.user.isLogin) {
+            AI.find({ user: info.user.name, status: 'Available' }).sort({ _id: -1}).exec(function(err, doc) {
+                info.myAI = doc || [];
+                return res.render('ai_status', info);
+            })
+        } else {
+            return res.render('ai_status', info);
+        }
     })
 }
 

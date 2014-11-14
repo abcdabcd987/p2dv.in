@@ -23,36 +23,8 @@ class Daemon:
                 self._battle(battle)
 
     ###### Task 1: Unzip & Compile
-    def _addTask(self, ai0):
-        print '      Arranging battles for the AI...'
-        tasks = []
-        for ai1 in self.db.ais.find({ 'status': 'Available' }).sort('_id', -1):
-            info = {
-                'user0'     : ai0['user'],
-                'name0'     : '',
-                'idOfUser0' : ai0['idOfUser'],
-                'user1'     : ai1['user'],
-                'name1'     : '',
-                'idOfUser1' : ai1['idOfUser'],
-                'status'    : 'Pending',
-                'step'      : 0,
-                'result'    : -1,
-                'winnerId'  : '',
-                'loserId'   : '',
-                'ids'       : list(),
-                'winner'    : {},
-                'loser'     : {},
-                'log'       : '',
-                'submitDate': datetime.now(),
-                'runDate'   : datetime.now()
-            }
-            tasks.append(info)
-        if tasks:
-            self.db.records.insert(tasks)
-
     def _build(self, ai):
         print '========== Found AI to be build: <', ai['user'], ',', ai['idOfUser'], '>, upload date: ', ai['uploadDate']
-
         p = Prepare(ai).Run()
 
         if p['status'] == 'failure':
@@ -62,21 +34,27 @@ class Daemon:
             }})
 
         else:
-            self._addTask(ai)
             self.db.ais.update({'_id':ai['_id']}, { '$set': {
                 'status': 'Available',
                 'buildInfo': p['info'],
                 'absPath': path.join(const.AI_SAVE_DIRECTORY, 'ai_' + str(ai['_id']))
             }})
+        print '      Done!'
 
 
     ###### Task 2: Battle
     def _battle(self, battle):
         print '========== Found a battle: <', battle['user0'], ',', battle['idOfUser0'], '> vs <', battle['user1'], ', ', battle['idOfUser1'], '>'
+
+        # Mark Running
+        doc_rec = {'$set':{'status': 'Running'}}
+        self.db.records.update({'_id':battle['_id']}, doc_rec)
+
         # Run battle
         server = const.AI_SERVER_DIRECTORY
         ai0 = self.db.ais.find_one({ 'user': battle['user0'], 'idOfUser': battle['idOfUser0'] })
         ai1 = self.db.ais.find_one({ 'user': battle['user1'], 'idOfUser': battle['idOfUser1'] })
+        runDate = datetime.now()
         result = Battle(server, ai0, ai1).Run()
 
         # Prepare documents
@@ -87,10 +65,9 @@ class Daemon:
             'name1'  : result['user'][1],
             'step'   : result['total'],
             'status' : 'Finished',
-            'ids'    : [ai0['_id'], ai1['_id']],
             'result' : result['result'],
             'log'    : json.dumps(result, indent=2),
-            'runDate': datetime.now()
+            'runDate': runDate
         }}
         if result['result'] == 2:
             # if draw
@@ -119,6 +96,8 @@ class Daemon:
         self.db.ais.update({'_id':ai0['_id']}, doc_ai0)
         self.db.ais.update({'_id':ai1['_id']}, doc_ai1)
         self.db.records.update({'_id':battle['_id']}, doc_rec)
+
+        print "      Done!"
 
 daemon = Daemon()
 daemon.Run()
