@@ -54,7 +54,6 @@ class Daemon:
         server = const.AI_SERVER_DIRECTORY
         ai0 = self.db.ais.find_one({ 'user': battle['user0'], 'idOfUser': battle['idOfUser0'] })
         ai1 = self.db.ais.find_one({ 'user': battle['user1'], 'idOfUser': battle['idOfUser1'] })
-        runDate = datetime.now()
         result = Battle(server, ai0, ai1).Run()
 
         # Prepare documents
@@ -67,7 +66,7 @@ class Daemon:
             'status' : 'Finished',
             'result' : result['result'],
             'log'    : json.dumps(result, indent=2),
-            'runDate': runDate
+            'runDate': datetime.utcnow()
         }}
         if result['result'] == 2:
             # if draw
