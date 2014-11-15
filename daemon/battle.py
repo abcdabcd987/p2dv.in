@@ -31,6 +31,7 @@ class Battle:
         return subprocess.Popen(args, stdin=Battle.FNULL, stdout=Battle.FNULL, stderr=Battle.FNULL, cwd=self.tmpdir, env={'PATH':self.tmpdir})
 
     def _runBattle(self):
+        time.sleep(5)
         # Run Server and Clients
         print '      Running Server...'
         server = self._runProgram([path.join(self.tmpdir, 'server', 'main.py')])
