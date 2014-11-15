@@ -50,9 +50,9 @@ module.exports.getFullStatus = function(id, cb) {
             }
             for (var i = 0; i < docs.length; ++i) {
                 docs[i].log = '';
-                if (docs[i].winnerId.equals(ai._id)) {
+                if (docs[i].winnerId && docs[i].winnerId.equals(ai._id)) {
                     info.wins.push(docs[i]);
-                } else if (docs[i].loserId.equals(ai._id)) {
+                } else if (docs[i].loserId && docs[i].loserId.equals(ai._id)) {
                     info.lose.push(docs[i]);
                 } else {
                     info.draw.push(docs[i]);
