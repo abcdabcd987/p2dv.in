@@ -34,7 +34,7 @@ class Battle:
         time.sleep(5)
         # Run Server and Clients
         print '      Running Server...'
-        server = self._runProgram([path.join(self.tmpdir, 'server', 'main.py')])
+        server = self._runProgram([path.join(self.tmpdir, 'server', 'main.py'), 'p2dv'])
         print '      Running AI 0...'
         client0 = self._runProgram([path.join(self.tmpdir, 'ai0'), '127.0.0.1'])
         print '      Running AI 1...'
