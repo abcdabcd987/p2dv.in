@@ -16,6 +16,18 @@ exports.getJSON = function(req, res) {
     });
 };
 
+exports.getSteps = function(req, res) {
+    var id = req.param('id');
+    Record.findOne({'_id': ObjectId(id)}).select('step status').exec(function(err, doc) {
+        if (!doc) {
+            res.send('404 Not Found!');
+            return;
+        }
+        res.set('Content-Type', 'application/json');
+        res.send(doc);
+    });
+}
+
 exports.showDemo = function(req, res) {
     var id = req.param('id');
     Record.findOne({'_id': ObjectId(id)}, function(err, doc) {

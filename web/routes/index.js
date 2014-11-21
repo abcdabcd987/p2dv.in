@@ -24,6 +24,7 @@ exports.setup = function(app) {
 
     app.get ('/battle/list', battle.showList);
     app.post('/battle/start', battle.execStart);
+    app.get ('/battle/:id-steps.json', battle.getSteps);
     app.get ('/battle/:id.json', battle.getJSON);
     app.get ('/battle/:id', battle.showDemo);
 }

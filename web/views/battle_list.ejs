@@ -23,7 +23,7 @@
     <% } else { %>
       <td><span class="label label-default"><%= rec.status %></span></td>
     <% } %>
-    <td><%= rec.status === 'Finished' ? rec.step : '' %></td>
+    <td><%= rec.status !== 'Pending' ? rec.step : '' %></td>
     <td><%=: rec.submitDate | formatDate %></td>
     <td><a href="/battle/<%= rec._id %>">(Demo)</a></td>
   </tr>

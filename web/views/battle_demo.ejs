@@ -6,9 +6,11 @@
   <dt>AI 2</dt><dd><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></dd>
   <dt>Submit Date</dt><dd><%=: rec.submitDate | formatDate %></dd>
   <% if (rec.status === 'Pending') { %>
-    <dt>Status</dt><dd><span class="label label-default"><%= rec.status %></span></dd>
+    <dt>Status</dt><dd><span id="span-status" class="label label-default"><%= rec.status %></span></dd>
+    <dt>Current Steps</dt><dd id="dd-steps"></dd>
   <% } else if (rec.status === 'Running') { %>
-    <dt>Status</dt><dd><span class="label label-warning"><%= rec.status %></span></dd>
+    <dt>Status</dt><dd><span id="span-status" class="label label-warning"><%= rec.status %></span></dd>
+    <dt>Current Steps</dt><dd id="dd-steps"><img src="/images/jumping-ball.gif"><span id="span-steps">loading</span></dd>
   <% } else { %>
     <dt>Battle Date</dt><dd><%=: rec.runDate | formatDate %></dd>
     <dt>Status</dt><dd><%= rec.status %></dd>
@@ -47,5 +49,8 @@
 <% if (rec.status === 'Finished') { %>
 <script src="<%= settings.staticCDN %>/js/demo.js"></script>
 <script>ChessDemo("<%= rec._id %>.json");</script>
+<% } else { %>
+<script src="<%= settings.staticCDN %>/js/refresh_steps.js"></script>
+<script>refresh_steps("<%= rec._id %>-steps.json");</script>
 <% } %>
 <% include foot_close %>

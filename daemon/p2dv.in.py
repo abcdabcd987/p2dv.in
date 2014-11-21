@@ -1,7 +1,6 @@
 import json
 import pymongo
 import tempfile
-import subprocess
 from os import path
 from datetime import datetime
 
@@ -54,7 +53,8 @@ class Daemon:
         server = const.AI_SERVER_DIRECTORY
         ai0 = self.db.ais.find_one({ 'user': battle['user0'], 'idOfUser': battle['idOfUser0'] })
         ai1 = self.db.ais.find_one({ 'user': battle['user1'], 'idOfUser': battle['idOfUser1'] })
-        result = Battle(server, ai0, ai1).Run()
+        updater = lambda step: self.db.records.update({'_id':battle['_id']}, {'$set':{'step':step}})
+        result = Battle(server, ai0, ai1, updater).Run()
 
         # Prepare documents
         doc_ai0 = {'$set':{'name':result['user'][0]}}
