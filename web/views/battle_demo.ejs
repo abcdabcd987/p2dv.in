@@ -30,8 +30,12 @@
 <% if (rec.status === 'Finished') { %>
 <div id="demo-info">
   <div>
-    <button type="button" class="btn btn-primary" disabled id="btn-playdemo">Loading Demo...</button>
-    <div class="btn-group">
+    <div class="btn-group noselect">
+      <button class="btn btn-sm btn-primary" disabled id="btn-prev"><span class="glyphicon glyphicon-chevron-left" id="span-prev" aria-hidden="true"></span></button>
+      <button class="btn btn-sm btn-primary" disabled id="btn-play"><span id="span-play">Loading Demo...</span></button>
+      <button class="btn btn-sm btn-primary" disabled id="btn-next"><span class="glyphicon glyphicon-chevron-right" id="span-next" aria-hidden="true"></span></button>
+    </div>
+    <div class="btn-group noselect">
       <button id="btn-speed-slow" class="btn btn-sm btn-success">Slow</button>
       <button id="btn-speed-normal" class="btn btn-sm btn-warning">Normal</button>
       <button id="btn-speed-fast" class="btn btn-sm btn-danger">Fast</button>
@@ -40,7 +44,7 @@
   <p id="demo-text" class="bg-primary">Total Step: <%= rec.step %></p>
 </div>
 
-<table id="chess-board">
+<table id="chess-board" class="noselect">
 </table>
 <div id="float-chess" class="hidden"></div>
 <% } %>
@@ -48,7 +52,7 @@
 <% include foot_script %>
 <% if (rec.status === 'Finished') { %>
 <script src="<%= settings.staticCDN %>/js/demo.js"></script>
-<script>ChessDemo("<%= rec._id %>.json");</script>
+<script>Demo.setup("<%= rec._id %>.json");</script>
 <% } else { %>
 <script src="<%= settings.staticCDN %>/js/refresh_steps.js"></script>
 <script>refresh_steps("<%= rec._id %>-steps.json");</script>
