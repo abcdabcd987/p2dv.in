@@ -7,8 +7,16 @@ class Updater:
 
     def _updateUser(self):
         for user in self.db.users.find({}):
-            submits = self.db.ais.find({'user':user['name']}).count()
-            self.db.users.update({'_id':user['_id']}, {'$set': {'submit': submits}})
+            submits = 0
+            win = 0
+            draw = 0
+            lose = 0
+            for ai in self.db.ais.find({'user':user['name']}):
+                submits += 1
+                win += ai['win']
+                draw += ai['draw']
+                lose += ai['lose']
+            self.db.users.update({'_id':user['_id']}, {'$set': {'submit': submits, 'win': win, 'draw': draw, 'lose': lose}})
 
     def _updateAI(self):
         for ai in self.db.ais.find({}):
