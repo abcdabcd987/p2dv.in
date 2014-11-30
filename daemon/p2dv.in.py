@@ -68,14 +68,34 @@ class Daemon:
             'log'    : json.dumps(result, indent=2),
             'runDate': datetime.utcnow()
         }}
+        doc_user0 = {'$inc': dict()}
+        doc_user1 = {'$inc': dict()}
         if result['result'] == 2:
             # if draw
             doc_ai0['$inc'] = {'draw':1}
-            doc_ai1['$inc'] = {'draw':1}
+            doc_ai0['$set']['ratio'] = (ai0['win'])/float(ai0['win']+ai0['draw']+ai0['lose']+1)
+            doc_user0['$inc']['draw'] = 1
+            if ai0['user'] != ai1['user']:
+                doc_user1['$inc']['draw'] = 1
+                doc_ai1['$set']['ratio'] = (ai1['win'])/float(ai1['win']+ai1['draw']+ai1['lose']+1)
+                doc_ai1['$inc'] = {'draw':1}
+            else:
+                doc_user1 = None;
+                del doc_ai1['$inc']
         elif result['result'] == 1:
             # if ai1 won:
             doc_ai0['$inc'] = {'lose':1}
             doc_ai1['$inc'] = {'win' :1}
+            if ai0['user'] != ai1['user']:
+                cnt0 = float(ai0['win']+ai0['draw']+ai0['lose']+1)
+                cnt1 = float(ai1['win']+ai1['draw']+ai1['lose']+1)
+            else:
+                cnt0 = float(ai0['win']+ai0['draw']+ai0['lose']+2)
+                cnt1 = float(ai1['win']+ai1['draw']+ai1['lose']+2)
+            doc_ai0['$set']['ratio'] = (ai0['win'])/cnt0
+            doc_ai1['$set']['ratio'] = (ai1['win']+1)/cnt1
+            doc_user0['$inc']['lose'] = 1;
+            doc_user1['$inc']['win' ] = 1;
             doc_rec['$set']['winnerId'] = ai1['_id']
             doc_rec['$set']['loserId']  = ai0['_id']
             doc_rec['$set']['winner'] = { 'name': ai1['name'], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
@@ -84,6 +104,16 @@ class Daemon:
             # if ai0 won:
             doc_ai0['$inc'] = {'win' :1}
             doc_ai1['$inc'] = {'lose':1}
+            if ai0['user'] != ai1['user']:
+                cnt0 = float(ai0['win']+ai0['draw']+ai0['lose']+1)
+                cnt1 = float(ai1['win']+ai1['draw']+ai1['lose']+1)
+            else:
+                cnt0 = float(ai0['win']+ai0['draw']+ai0['lose']+2)
+                cnt1 = float(ai1['win']+ai1['draw']+ai1['lose']+2)
+            doc_ai0['$set']['ratio'] = (ai0['win']+1)/cnt0
+            doc_ai1['$set']['ratio'] = (ai1['win'])/cnt1
+            doc_user0['$inc']['win' ] = 1;
+            doc_user1['$inc']['lose'] = 1;
             doc_rec['$set']['winnerId'] = ai0['_id']
             doc_rec['$set']['loserId']  = ai1['_id']
             doc_rec['$set']['winner'] = { 'name': ai0['name'], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
@@ -94,6 +124,9 @@ class Daemon:
         # Update documents
         self.db.ais.update({'_id':ai0['_id']}, doc_ai0)
         self.db.ais.update({'_id':ai1['_id']}, doc_ai1)
+        self.db.users.update({'name':ai0['user']}, doc_user0)
+        if doc_user1:
+            self.db.users.update({'name':ai1['user']}, doc_user1)
         self.db.records.update({'_id':battle['_id']}, doc_rec)
 
         print "      Done!"

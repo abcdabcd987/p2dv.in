@@ -5,6 +5,7 @@ exports.initSession = function(req) {
     req.session.setup = true;
     req.session.user = {
         name: '',
+        isLogin: false,
     };
     return true;
 };

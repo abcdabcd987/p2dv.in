@@ -1,6 +1,7 @@
 var settings = require('../settings');
 var utility = require('./utility');
 var User = require('../models/user');
+var AI = require('../models/ai');
 
 function setSessionLogin(req, user) {
     req.session.user = {
@@ -78,5 +79,24 @@ exports.execRegister = function(req, res) {
 exports.execLogout = function(req, res) {
     req.session.destroy(function() {
         res.redirect('/'); 
+    });
+}
+
+exports.showList = function(req, res) {
+    User.count({}, function(err, count) {
+        var page = Number(req.query.page || '1');
+        var skip = settings.AIPerPage * (page-1);
+        var sort = req.query.sort || '-_id';
+
+        User.find({}).sort(sort).skip(skip).limit(settings.AIPerPage).exec(function(err, doc) {
+            var info =utility.prepareRenderMessage(req);
+            info.page = page;
+            info.totpage = Math.ceil(count / settings.AIPerPage);
+            info.sort = sort;
+
+            info.title = 'User List';
+            info.list = doc;
+            return res.render('user_list', info);
+        });
     });
 }

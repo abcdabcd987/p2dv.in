@@ -1,15 +1,20 @@
 <% include head %>
+<% if (username) { %>
+<h1>AI List of <small><%= username %></small></h1>
+<% } else { %>
 <h1>AI List</h1>
+<% } %>
 <table id="ai-list-table" class="table table-hover">
 <thead>
   <tr>
-    <td><a href="/ai/list?sort=+user">User</a> (Submit)</td>
+    <td><a href="/ai/list?username=<%= username %>&amp;sort=+user">User</a> (<a href="/ai/list?username=<%= username %>&amp;sort=+user%20-idOfUser">Submit</a>)</td>
     <td>AI Name</td>
     <td>Status</td>
-    <td><a href="/ai/list?sort=-win">Win</a></td>
-    <td><a href="/ai/list?sort=-draw">Draw</a></td>
-    <td><a href="/ai/list?sort=-lose">Lose</td>
-    <td>Upload Date</td>
+    <td><a href="/ai/list?username=<%= username %>&amp;sort=-win">Win</a></td>
+    <td><a href="/ai/list?username=<%= username %>&amp;sort=-draw">Draw</a></td>
+    <td><a href="/ai/list?username=<%= username %>&amp;sort=-lose">Lose</a></td>
+    <td><a href="/ai/list?username=<%= username %>&amp;sort=-ratio">Ratio</a></td>
+    <td><a href="/ai/list?username=<%= username %>&amp;sort=-uploadDate">Upload Date</a></td>
     <td></td>
   </tr>
 </thead>
@@ -28,6 +33,7 @@
     <td><span class="label label-success"><%= ai.win %></span></td>
     <td><span class="label label-warning"><%= ai.draw %></span></td>
     <td><span class="label label-danger"><%= ai.lose %></span></td>
+    <td><%= Number(ai.ratio*100).toFixed(1) %>%</td>
     <td><%=: ai.uploadDate | formatDate %></td>
     <td><a href="/ai/<%= ai._id %>">(Detail)</a></td>
   </tr>
@@ -39,14 +45,14 @@
   <% if (page === 1) { %>
     <li class="previous disabled"><a href="#">&larr; Newer</a></li>
   <% } else { %>
-    <li class="previous"><a href="/ai/list?page=<%= page-1 %>&amp;sort=<%= sort %>">&larr; Newer</a></li>
+    <li class="previous"><a href="/ai/list?username=<%= username %>&amp;page=<%= page-1 %>&amp;sort=<%= sort %>">&larr; Newer</a></li>
   <% } %>
 
 
   <% if (page === totpage) { %>
     <li class="next disabled"><a href="#">&rarr; Older</a></li>
   <% } else { %>
-    <li class="next"><a href="/ai/list?page=<%= page+1 %>&amp;sort=<%= sort %>">&rarr; Older</a></li>
+    <li class="next"><a href="/ai/list?username=<%= username %>&amp;page=<%= page+1 %>&amp;sort=<%= sort %>">&rarr; Older</a></li>
   <% } %>
   </ul>
 </nav>

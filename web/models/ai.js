@@ -8,6 +8,7 @@ var schema = new Schema({
     win:  { type: Number, default: 0 },
     draw: { type: Number, default: 0 },
     lose: { type: Number, default: 0 },
+    ratio:{ type: Number, default: 0 },
     status: { type: String, default: "Pending" },
     buildInfo: { type: String, default: '' },
     absPath: { type: String },

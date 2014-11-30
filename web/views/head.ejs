@@ -23,10 +23,11 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/ai/list">AI List</a></li>
-            <li><a href="/battle/list">Battle Status</a></li>
-            <li><a href="/ai/upload">Upload AI</a></li>
+            <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
+            <li><a href="/user/list"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> User</a></li>
+            <li><a href="/ai/list"><span class="glyphicon glyphicon-tower" aria-hidden="true"></span> AI</a></li>
+            <li><a href="/battle/list"><span class="glyphicon glyphicon-fire" aria-hidden="true"></span> Battle</a></li>
+            <li><a href="/ai/upload"><span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Upload</a></li>
           </ul>
           <div class="nav navbar-nav navbar-right">
             <ul class="nav navbar-nav">
@@ -34,10 +35,6 @@
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Hi, <strong><%= user.name %></strong> <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="/ai/list">AI List</a></li>
-                  <li><a href="/battle/list">Battle Status</a></li>
-                  <li><a href="/ai/upload">Upload AI</a></li>
-                  <li class="divider"></li>
                   <li><a href="/user/logout">Logout</a></li>
                 </ul>
               </li>

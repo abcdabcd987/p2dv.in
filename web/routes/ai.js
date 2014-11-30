@@ -8,7 +8,6 @@ var User = require('../models/user');
 var processUpload = function(ai) {
     var type = ai.type;
     var size = ai.size;
-    var ext = ai.path.substr()
 
     if ((type !== 'application/zip' && type === 'application/octet-stream' && ai.path.substr(-4, 4) !== '.zip') || 
         !size || size > 1*1024*1024) {
@@ -73,7 +72,9 @@ exports.execUpload = function(req, res) {
         var item = new AI(info);
         item.save(function(err, saved) {
             if (err) return fallback(['Unknown Error']);
-            res.redirect('/ai/' + saved.id);
+            User.update({name: req.session.user.name}, {$inc:{submit:1}}, function(err, num) {
+                res.redirect('/ai/' + saved.id);
+            });
         });
     });
 };
@@ -105,16 +106,19 @@ exports.showStatus = function(req, res) {
 }
 
 exports.showList = function(req, res) {
-    AI.count({}, function(err, count) {
+    var username = req.query.username || '';
+    var cond = username ? {user: username} : {};
+    AI.count(cond, function(err, count) {
         var page = Number(req.query.page || '1');
         var skip = settings.AIPerPage * (page-1);
         var sort = req.query.sort || '-_id';
 
-        AI.find({}).sort(sort).skip(skip).limit(settings.AIPerPage).exec(function(err, doc) {
+        AI.find(cond).sort(sort).skip(skip).limit(settings.AIPerPage).exec(function(err, doc) {
             var info =utility.prepareRenderMessage(req);
             info.page = page;
             info.totpage = Math.ceil(count / settings.AIPerPage);
             info.sort = sort;
+            info.username = username;
 
             info.title = 'AI List';
             info.list = doc;

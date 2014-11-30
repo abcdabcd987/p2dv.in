@@ -16,6 +16,7 @@ exports.setup = function(app) {
 	app.get ('/user/register', user.showRegister);
 	app.post('/user/register', user.execRegister);
 	app.get ('/user/logout', user.execLogout);
+    app.get ('/user/list', user.showList);
 
     app.get ('/ai/upload', ai.showUpload);
     app.post('/ai/upload', ai.execUpload);
