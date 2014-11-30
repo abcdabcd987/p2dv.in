@@ -12,7 +12,8 @@ class Updater:
 
     def _updateAI(self):
         for ai in self.db.ais.find({}):
-            ratio = ai['win']/float(ai['win']+ai['draw']+ai['lose'])
+            cnt = ai['win']+ai['draw']+ai['lose']
+            ratio = ai['win']/float(cnt) if cnt != 0 else 0
             self.db.ais.update({'_id':ai['_id']}, {'$set': {'ratio': ratio}})
 
     def Run(self):
