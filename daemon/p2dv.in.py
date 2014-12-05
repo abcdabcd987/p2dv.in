@@ -81,7 +81,6 @@ class Daemon:
                 doc_ai1['$inc'] = {'draw':1}
             else:
                 doc_user1 = None;
-                del doc_ai1['$inc']
         elif result['result'] == 1:
             # if ai1 won:
             doc_ai0['$inc'] = {'lose':1}
