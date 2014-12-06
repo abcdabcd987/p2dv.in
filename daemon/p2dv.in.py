@@ -1,3 +1,4 @@
+import time
 import json
 import pymongo
 import tempfile
@@ -20,6 +21,7 @@ class Daemon:
                 self._build(ai)
             for battle in self.db.records.find({ 'status': 'Pending' }).sort('_id', 1):
                 self._battle(battle)
+            time.sleep(1)
 
     ###### Task 1: Unzip & Compile
     def _build(self, ai):
