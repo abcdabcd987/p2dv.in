@@ -29,6 +29,8 @@
 
 <% if (rec.status === 'Finished') { %>
 <div id="demo-info">
+  <ul id="invalid-list" class="list-group">
+  </ul>
   <div>
     <div class="btn-group noselect">
       <button class="btn btn-sm btn-primary" disabled id="btn-prev"><span class="glyphicon glyphicon-chevron-left" id="span-prev" aria-hidden="true"></span></button>
@@ -51,7 +53,7 @@
 
 <% include foot_script %>
 <% if (rec.status === 'Finished') { %>
-<script src="<%= settings.staticCDN %>/js/demo.js?20141126"></script>
+<script src="<%= settings.staticCDN %>/js/demo.js?20141208"></script>
 <script>Demo.setup("<%= rec._id %>.json");</script>
 <% } else { %>
 <script src="<%= settings.staticCDN %>/js/refresh_steps.js"></script>

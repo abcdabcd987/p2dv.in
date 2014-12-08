@@ -105,9 +105,21 @@ Demo = {
         });
     },
 
+    setupInvalidList: function setupInvalidList() {
+        var ul = $('#invalid-list');
+        for (var i = 0; i < Demo.data.step.length; ++i) {
+            var step = Demo.data.step[i];
+            if (!step.valid) {
+                var info = step.message || 'Invalid Operation! (No Details)';
+                ul.append('<li class="list-group-item"><strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> ' + info + '</li>');
+            }
+        }
+    },
+
     getData: function getData() {
         $.getJSON(Demo.jsonURL, function(dt) {
             Demo.data = dt;
+            Demo.setupInvalidList();
             Demo.btnPlay.prop('disabled', false);
             Demo.spanPlay.html('');
             Demo.playing = dt.step.length-1;
