@@ -72,13 +72,25 @@ class Battle:
             self.updater(steps)
 
         # Get stderr
-        self.stderr0 = client0.stderr.read()
-        self.stderr1 = client1.stderr.read()
+        try:
+            self.stderr0 = client0.communicate(timeout=1)
+        except:
+            client0.kill()
+            self.stderr0 = client0.communicate()
+
+        try:
+            self.stderr1 = client1.communicate(timeout=1)
+        except:
+            client1.kill()
+            self.stderr1 = client1.communicate()
 
         # Kill all
-        server.kill()
-        client0.kill()
-        client1.kill()
+        if server.poll() == None:
+            server.kill()
+        if client0.poll() == None:
+            client0.kill()
+        if client1.poll() == None:
+            client1.kill()
 
     def _clean(self):
         shutil.rmtree(self.tmpdir)
