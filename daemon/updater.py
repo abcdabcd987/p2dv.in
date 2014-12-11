@@ -24,10 +24,15 @@ class Updater:
             ratio = ai['win']/float(cnt) if cnt != 0 else 0
             self.db.ais.update({'_id':ai['_id']}, {'$set': {'ratio': ratio}})
 
+    def _updateRecord(self):
+        for record in self.db.records.find({}):
+            self.db.records.update({'_id':record['_id']}, {'$set': {'stderr0': '', 'stderr1': ''}})
+
     def Run(self):
         self._initDB()
-        self._updateUser()
         self._updateAI()
+        self._updateUser()
+        self._updateRecord()
 
 updater = Updater()
 updater.Run()

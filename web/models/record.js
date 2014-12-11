@@ -24,6 +24,8 @@ var schema = new Schema({
         idOfUser: { type: Number },
     },
 	log: { type: String },
+    stderr0: { type: String },
+    stderr1: { type: String },
     submitDate: { type: Date, default: Date.now },
     runDate : { type: Date, default: Date.now },
 });

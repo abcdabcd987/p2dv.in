@@ -56,7 +56,7 @@ class Daemon:
         ai0 = self.db.ais.find_one({ 'user': battle['user0'], 'idOfUser': battle['idOfUser0'] })
         ai1 = self.db.ais.find_one({ 'user': battle['user1'], 'idOfUser': battle['idOfUser1'] })
         updater = lambda step: self.db.records.update({'_id':battle['_id']}, {'$set':{'step':step}})
-        result = Battle(server, ai0, ai1, updater).Run()
+        result, stderr0, stderr1 = Battle(server, ai0, ai1, updater).Run()
 
         # Prepare documents
         doc_ai0 = {'$set':{'name':result['user'][0]}}
@@ -68,7 +68,9 @@ class Daemon:
             'status' : 'Finished',
             'result' : result['result'],
             'log'    : json.dumps(result, indent=2),
-            'runDate': datetime.utcnow()
+            'runDate': datetime.utcnow(),
+            'stderr0': stderr0,
+            'stderr1': stderr1
         }}
         doc_user0 = {'$inc': dict()}
         doc_user1 = {'$inc': dict()}

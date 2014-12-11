@@ -28,4 +28,5 @@ exports.setup = function(app) {
     app.get ('/battle/:id-steps.json', battle.getSteps);
     app.get ('/battle/:id.json', battle.getJSON);
     app.get ('/battle/:id', battle.showDemo);
+    app.get ('/battle/:id/stderr/:aid/:filename.txt', battle.getStderr);
 }

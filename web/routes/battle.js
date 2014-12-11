@@ -6,7 +6,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 
 exports.getJSON = function(req, res) {
     var id = req.param('id');
-    Record.findOne({'_id': ObjectId(id)}, function(err, doc) {
+    Record.findOne({'_id': ObjectId(id)}).select('log').exec(function(err, doc) {
         if (!doc) {
             res.send('404 Not Found!');
             return;
@@ -28,6 +28,19 @@ exports.getSteps = function(req, res) {
     });
 }
 
+exports.getStderr = function(req, res) {
+    var id = req.param('id');
+    var aid = Number(req.param('aid'))-1;
+    Record.findOne({'_id': ObjectId(id)}).select('stderr'+aid).exec(function(err, doc) {
+        if (!doc) {
+            res.send('404 Not Found!');
+            return;
+        }
+        res.set('Content-Type', 'text/plain');
+        res.send(doc['stderr'+aid]);
+    });
+};
+
 exports.showDemo = function(req, res) {
     var id = req.param('id');
     Record.findOne({'_id': ObjectId(id)}, function(err, doc) {
@@ -48,7 +61,7 @@ exports.showList = function(req, res) {
         var page = Number(req.query.page || '1');
         var skip = settings.battlePerPage * (page-1);
 
-        Record.find({}).select({log:0}).sort({_id:-1}).skip(skip).limit(settings.battlePerPage).exec(function(err, doc) {
+        Record.find({}).select({log:0,stderr0:0,stderr1:0}).sort({_id:-1}).skip(skip).limit(settings.battlePerPage).exec(function(err, doc) {
             var info =utility.prepareRenderMessage(req);
             info.title = 'Battle List';
             info.list = doc;

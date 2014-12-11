@@ -2,16 +2,22 @@
 
 <h1>Battle Demo</h1>
 <dl class="dl-horizontal">
-  <dt>AI 1</dt><dd><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></dd>
-  <dt>AI 2</dt><dd><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></dd>
   <dt>Submit Date</dt><dd><%=: rec.submitDate | formatDate %></dd>
   <% if (rec.status === 'Pending') { %>
+    <dt>AI 1</dt><dd><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></dd>
+    <dt>AI 2</dt><dd><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></dd>
     <dt>Status</dt><dd><span id="span-status" class="label label-default"><%= rec.status %></span></dd>
     <dt>Current Steps</dt><dd id="dd-steps"></dd>
   <% } else if (rec.status === 'Running') { %>
+    <dt>AI 1</dt><dd><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></dd>
+    <dt>AI 2</dt><dd><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></dd>
     <dt>Status</dt><dd><span id="span-status" class="label label-warning"><%= rec.status %></span></dd>
     <dt>Current Steps</dt><dd id="dd-steps"><img src="/images/jumping-ball.gif"><span id="span-steps">loading</span></dd>
   <% } else { %>
+    <dt>AI 1</dt><dd><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small>
+      <a href="/battle/<%= rec._id %>/stderr/1/<%=: rec.submitDate | formatDate %> [AI1]<%= rec.name0 %>.txt">(stderr)</a></dd>
+    <dt>AI 2</dt><dd><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small>
+      <a href="/battle/<%= rec._id %>/stderr/2/<%=: rec.submitDate | formatDate %> [AI2]<%= rec.name1 %>.txt">(stderr)</a></dd>
     <dt>Battle Date</dt><dd><%=: rec.runDate | formatDate %></dd>
     <dt>Status</dt><dd><%= rec.status %></dd>
     <dt>Total Steps</dt><dd><%= rec.step %></dd>

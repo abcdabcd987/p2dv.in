@@ -45,14 +45,14 @@ class Battle:
         print '      Running AI 0 ... ',
         server.stdin.write('accept ai0\n')
         server.stdin.flush()
-        client0 = self._runProgram([path.join(self.tmpdir, 'ai0'), 'localhost', port])
+        client0 = self._runProgram([path.join(self.tmpdir, 'ai0'), 'localhost', port], stderr=subprocess32.PIPE)
         self.ai0name = server.stderr.readline().strip()
         print 'Done. Name: ', self.ai0name
 
         print '      Running AI 1 ... ',
         server.stdin.write('accept ai1\n')
         server.stdin.flush()
-        client1 = self._runProgram([path.join(self.tmpdir, 'ai1'), 'localhost', port])
+        client1 = self._runProgram([path.join(self.tmpdir, 'ai1'), 'localhost', port], stderr=subprocess32.PIPE)
         self.ai1name = server.stderr.readline().strip()
         print 'Done. Name: ', self.ai1name
 
@@ -62,7 +62,7 @@ class Battle:
         if line != 'ready\n':
             print 'not get ready signal, but:', line
 
-        # Wait for server, then kill clients
+        # Wait for server
         while True:
             server.stdin.write('get steps\n')
             server.stdin.flush()
@@ -70,6 +70,12 @@ class Battle:
             if steps == 'finished':
                 break
             self.updater(steps)
+
+        # Get stderr
+        self.stderr0 = client0.stderr.read()
+        self.stderr1 = client1.stderr.read()
+
+        # Kill all
         server.kill()
         client0.kill()
         client1.kill()
@@ -88,4 +94,4 @@ class Battle:
         self._runBattle()
         self._readJSON()
         self._clean()
-        return self.json
+        return self.json, self.stderr0, self.stderr1
