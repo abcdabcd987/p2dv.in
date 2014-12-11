@@ -73,16 +73,16 @@ class Battle:
 
         # Get stderr
         try:
-            self.stderr0 = client0.communicate(timeout=1)
+            self.stderr0 = client0.communicate(timeout=1)[1]
         except:
             client0.kill()
-            self.stderr0 = client0.communicate()
+            self.stderr0 = client0.communicate()[1]
 
         try:
-            self.stderr1 = client1.communicate(timeout=1)
+            self.stderr1 = client1.communicate(timeout=1)[1]
         except:
             client1.kill()
-            self.stderr1 = client1.communicate()
+            self.stderr1 = client1.communicate()[1]
 
         # Kill all
         if server.poll() == None:
