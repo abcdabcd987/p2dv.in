@@ -42,6 +42,6 @@ function watch(trID, url) {
             window.location.reload();
             return;
         }
-        setTimeout(watch, 50, trID, url);
+        setTimeout(watch, 150, trID, url);
     })
 }
