@@ -62,7 +62,7 @@
 <script src="<%= settings.staticCDN %>/js/demo.js?20141208"></script>
 <script>Demo.setup("<%= rec._id %>.json");</script>
 <% } else { %>
-<script src="<%= settings.staticCDN %>/js/refresh_steps.js"></script>
-<script>refresh_steps("<%= rec._id %>-steps.json");</script>
+<script src="<%= settings.staticCDN %>/js/refresh_steps.js?20141212"></script>
+<script>refresh_step("<%= rec._id %>-steps.json");</script>
 <% } %>
 <% include foot_close %>

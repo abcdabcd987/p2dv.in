@@ -12,18 +12,27 @@
   </tr>
 </thead>
 <tbody>
-<% for (var i = 0; i < list.length; ++i) { var rec = list[i]; %>
-  <tr>
+<% 
+  var refresh_list = [];
+  for (var i = 0; i < list.length; ++i) { 
+    var rec = list[i];
+    if (rec.status !== 'Finished') {
+      refresh_list.push(i);
+    }
+%>
+  <tr id="row-<%= i %>">
     <td class="<%= getColor(rec.result, 0) %>"><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></td>
     <td class="<%= getColor(rec.result, 1) %>"><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></td>
     <% if (rec.status === 'Running')  { %>
-      <td><span class="label label-warning"><%= rec.status %></span></td>
+      <td><span class="status label label-warning"><%= rec.status %></span></td>
+      <td class="steps"><%= rec.step %></td>
     <% } else if (rec.status === 'Finished') { %>
-      <td><span class="label label-success"><%= rec.status %></span></td>
+      <td><span class="status label label-success"><%= rec.status %></span></td>
+      <td class="steps"><%= rec.step %></td>
     <% } else { %>
-      <td><span class="label label-default"><%= rec.status %></span></td>
+      <td><span class="status label label-default"><%= rec.status %></span></td>
+      <td class="steps"></td>
     <% } %>
-    <td><%= rec.status !== 'Pending' ? rec.step : '' %></td>
     <td><%=: rec.submitDate | formatDate %></td>
     <td><a href="/battle/<%= rec._id %>">(Demo)</a></td>
   </tr>
@@ -47,4 +56,12 @@
   <% } %>
   </ul>
 </nav>
-<% include foot %>
+
+<% include foot_script %>
+<% if (refresh_list.length) { %>
+<script src="<%= settings.staticCDN %>/js/refresh_steps.js?20141212"></script>
+<script><% for (var i = 0; i < refresh_list.length; ++i) { var rec = list[refresh_list[i]]; %>
+watch("#row-<%= refresh_list[i] %>", "/battle/<%= rec._id %>-steps.json");<% } %>
+</script>
+<% } %>
+<% include foot_close %>
