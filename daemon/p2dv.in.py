@@ -38,6 +38,7 @@ class Daemon:
     def _getFile(self, ID, dlType, savepath):
         while True:
             try:
+                print 'Getting Files ... %s ... %s ... %s' % (ID, dlType, savepath)
                 r = requests.post(const.CORE_SERVER + '/download', data={'token': const.TOKEN, 'id': ID, 'type': dlType})
                 with open(savepath, 'wb') as f:
                     f.write(r.content)
@@ -49,6 +50,7 @@ class Daemon:
     def _uploadAI(self, ID, status, buildInfo, absPath=None):
         while True:
             try:
+                print 'Uploading AI ... %s ... %s ... %s' % (ID, status, absPath)
                 data = { 'info': buildInfo, 'status': status, 'token': const.TOKEN, 'id': ID }
                 if status == 'Available':
                     files = {'ai': open(absPath, 'rb')}
