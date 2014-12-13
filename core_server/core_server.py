@@ -76,7 +76,7 @@ class DownloadHandler(tornado.web.RequestHandler):
         path = ''
         doc = db.ais.find_one({'_id':ObjectId(i)})
         if t == 'zip':
-            if doc and doc['status'] == 'Pending':
+            if doc and doc['status'] == 'Building':
                 path = doc['absPath']
         elif t == 'ai':
             if doc and doc['status'] == 'Available':

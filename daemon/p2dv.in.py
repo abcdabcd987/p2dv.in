@@ -1,3 +1,4 @@
+import os
 import time
 import json
 import random
@@ -102,6 +103,8 @@ class Daemon:
     def _ensureFile(self, ID, fileType, absPath):
         if not path.isfile(absPath):
             self._getFile(ID, fileType, absPath)
+            if fileType == 'ai':
+                os.chmod(absPath, 0755)
 
     def _battle(self, battle):
         print '========== Found a battle: <', battle['user0'], ',', battle['idOfUser0'], '> vs <', battle['user1'], ', ', battle['idOfUser1'], '>'
