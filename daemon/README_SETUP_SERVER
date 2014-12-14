@@ -1,0 +1,16 @@
+timedatectl set-timezone Asia/Shanghai
+yum makecache
+yum install -y git epel-release boost-devel gcc python-devel vim screen
+yum group install -y "Development Tools"
+easy_install pymongo
+easy_install subprocess32
+easy_install requests
+useradd -m -s /bin/bash p2dv
+passwd p2dv
+chmod -R go-rwx /home/p2dv/.python-eggs/
+
+mkdir ai
+mkdir tmp
+mkdir upload
+git clone https://github.com/abcdabcd987/p2dv.in.git
+git clone https://github.com/juda/animal.git
