@@ -24,13 +24,12 @@ class Updater:
         lastid = self.db.updater.find_one({'type': 'ai'})['id']
         nowid = lastid
         (cnt0, cnt1) = (0, 0)
-
         ratingList = dict()
-        for ai in self.db.ais.find({}):
-            ratingList[str(ai['_id'])] = ai['rating']
 
         for rec in self.db.records.find({'_id': {'$gt': lastid}}).sort('_id', 1):
             if time.mktime(rec['runDate'].timetuple()) > timestamp:
+                break
+            if rec['status'] != 'Finished':
                 break
             nowid = rec['_id']
             if rec['ids'][0] == rec['ids'][1]:
@@ -47,17 +46,22 @@ class Updater:
                 S0, S1 = 0, 1
             else:
                 S0, S1 = 0.5, 0.5
+            r0 = int(R0 + 42 * (S0 - E0))
+            r1 = int(R1 + 42 * (S1 - E1))
 
-            cnt0 += 1
-            self.db.ais.update({'_id':rec['ids'][0]}, {'$set': {'rating':int(R0 + 42 * (S0 - E0))}})
-            self.db.ais.update({'_id':rec['ids'][1]}, {'$set': {'rating':int(R1 + 42 * (S1 - E1))}})
+            if r0 != R0:
+                self.db.ais.update({'_id':rec['ids'][0]}, {'$set': {'rating':r0}})
+                ratingList[str(rec['ids'][0])] = r0
+                cnt0 += 1
+            if r1 != R1:
+                self.db.ais.update({'_id':rec['ids'][1]}, {'$set': {'rating':r1}})
+                ratingList[str(rec['ids'][1])] = r1
+                cnt0 += 1
 
-        if nowid == lastid:
-            return
-        for ai in self.db.ais.find({}):
-            if timestamp > time.mktime(ai['uploadDate'].timetuple()) and ai['rating'] != ratingList[str(ai['_id'])]:
-                cnt1 += 1
-                self.db.airatings.insert({'id': ai['_id'], 'rating': ai['rating'], 'date': datetime.fromtimestamp(timestamp)})
+        dt = datetime.fromtimestamp(timestamp)
+        for aid in ratingList:
+            self.db.airatings.insert({'id': ObjectId(aid), 'rating': ratingList[aid], 'date': dt})
+            cnt1 += 1
         self.db.updater.update({'type': 'ai'}, {'$set': {'id': nowid}})
         return (cnt0, cnt1)
 
@@ -65,13 +69,12 @@ class Updater:
         lastid = self.db.updater.find_one({'type': 'user'})['id']
         nowid = lastid
         (cnt0, cnt1) = (0, 0)
-
         ratingList = dict()
-        for user in self.db.users.find({}):
-            ratingList[str(user['_id'])] = user['rating']
 
         for rec in self.db.records.find({'_id': {'$gt': lastid}}).sort('_id', 1):
             if time.mktime(rec['runDate'].timetuple()) > timestamp:
+                break
+            if rec['status'] != 'Finished':
                 break
             nowid = rec['_id']
             if rec['user0'] == rec['user1']:
@@ -88,17 +91,23 @@ class Updater:
                 S0, S1 = 0, 1
             else:
                 S0, S1 = 0.5, 0.5
+            r0 = int(R0 + 16 * (S0 - E0))
+            r1 = int(R1 + 16 * (S1 - E1))
 
-            cnt0 += 1
-            self.db.users.update({'name':rec['user0']}, {'$set': {'rating':int(R0 + 16 * (S0 - E0))}})
-            self.db.users.update({'name':rec['user1']}, {'$set': {'rating':int(R1 + 16 * (S1 - E1))}})
+            if r0 != R0:
+                self.db.users.update({'name':rec['user0']}, {'$set': {'rating':r0}})
+                ratingList[rec['user0']] = r0
+                cnt0 += 1
+            if r1 != R1:
+                self.db.users.update({'name':rec['user1']}, {'$set': {'rating':r1}})
+                ratingList[rec['user1']] = r1
+                cnt0 += 1
 
-        if nowid == lastid:
-            return
-        for user in self.db.users.find({}):
-            if timestamp > time.mktime(user['registerDate'].timetuple()) and user['rating'] != ratingList[str(user['_id'])]:
-                cnt1 += 1
-                self.db.userratings.insert({'id': user['_id'], 'rating': user['rating'], 'date': datetime.fromtimestamp(timestamp)})
+        dt = datetime.fromtimestamp(timestamp)
+        for uname in ratingList:
+            udoc = self.db.users.find_one({'name': uname})
+            self.db.userratings.insert({'id': udoc['_id'], 'rating': ratingList[uname], 'date': dt})
+            cnt1 += 1
         self.db.updater.update({'type': 'user'}, {'$set': {'id': nowid}})
         return (cnt0, cnt1)
 
@@ -112,6 +121,7 @@ class Updater:
             res2 = self._updateUserRating(timestamp)
             print datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S'), res1, res2
             timestamp += 120
+
 
 updater = Updater()
 updater.Run()

@@ -13,10 +13,10 @@ class Updater:
         nowid = lastid
 
         ratingList = dict()
-        for ai in self.db.ais.find({}):
-            ratingList[str(ai['_id'])] = ai['rating']
 
         for rec in self.db.records.find({'_id': {'$gt': lastid}}).sort('_id', 1):
+            if rec['status'] != 'Finished':
+                break
             nowid = rec['_id']
             if rec['ids'][0] == rec['ids'][1]:
                 continue
@@ -37,14 +37,14 @@ class Updater:
 
             if r0 != R0:
                 self.db.ais.update({'_id':rec['ids'][0]}, {'$set': {'rating':r0}})
+                ratingList[str(rec['ids'][0])] = r0
             if r1 != R1:
                 self.db.ais.update({'_id':rec['ids'][1]}, {'$set': {'rating':r1}})
+                ratingList[str(rec['ids'][1])] = r1
 
-        if nowid == lastid:
-            return
-        for ai in self.db.ais.find({}):
-            if ai['rating'] != ratingList[str(ai['_id'])]:
-                self.db.airatings.insert({'id': ai['_id'], 'rating': ai['rating'], 'date': datetime.utcnow()})
+        dt = datetime.utcnow()
+        for aid in ratingList:
+            self.db.airatings.insert({'id': ObjectId(aid), 'rating': ratingList[aid], 'date': dt})
         self.db.updater.update({'type': 'ai'}, {'$set': {'id': nowid}})
 
     def _updateUserRating(self):
@@ -52,10 +52,10 @@ class Updater:
         nowid = lastid
 
         ratingList = dict()
-        for user in self.db.users.find({}):
-            ratingList[str(user['_id'])] = user['rating']
 
         for rec in self.db.records.find({'_id': {'$gt': lastid}}).sort('_id', 1):
+            if rec['status'] != 'Finished':
+                break
             nowid = rec['_id']
             if rec['user0'] == rec['user1']:
                 continue
@@ -76,14 +76,15 @@ class Updater:
 
             if r0 != R0:
                 self.db.users.update({'name':rec['user0']}, {'$set': {'rating':r0}})
+                ratingList[rec['user0']] = r0
             if r1 != R1:
                 self.db.users.update({'name':rec['user1']}, {'$set': {'rating':r1}})
+                ratingList[rec['user1']] = r1
 
-        if nowid == lastid:
-            return
-        for user in self.db.users.find({}):
-            if user['rating'] != ratingList[str(user['_id'])]:
-                self.db.userratings.insert({'id': user['_id'], 'rating': user['rating'], 'date': datetime.utcnow()})
+        dt = datetime.utcnow()
+        for uname in ratingList:
+            udoc = self.db.users.find_one({'name': uname})
+            self.db.userratings.insert({'id': udoc['_id'], 'rating': ratingList[uname], 'date': dt})
         self.db.updater.update({'type': 'user'}, {'$set': {'id': nowid}})
 
     def Run(self):
