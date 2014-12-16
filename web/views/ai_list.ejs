@@ -10,6 +10,7 @@
     <td><a href="/ai/list?username=<%= username %>&amp;sort=+user">User</a> (<a href="/ai/list?username=<%= username %>&amp;sort=+user%20-idOfUser">Submit</a>)</td>
     <td>AI Name</td>
     <td>Status</td>
+    <td><a href="/ai/list?username=<%= username %>&amp;sort=-rating">Rating</a></td>
     <td><a href="/ai/list?username=<%= username %>&amp;sort=-win">Win</a></td>
     <td><a href="/ai/list?username=<%= username %>&amp;sort=-draw">Draw</a></td>
     <td><a href="/ai/list?username=<%= username %>&amp;sort=-lose">Lose</a></td>
@@ -30,6 +31,7 @@
     <% } else { %>
       <td><span class="label label-default"><%= ai.status %></span></td>
     <% } %>
+    <td><%= ai.rating %></td>
     <td><span class="label label-success"><%= ai.win %></span></td>
     <td><span class="label label-warning"><%= ai.draw %></span></td>
     <td><span class="label label-danger"><%= ai.lose %></span></td>

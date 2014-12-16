@@ -12,6 +12,7 @@ var schema = new Schema({
     status: { type: String, default: "Pending" },
     buildInfo: { type: String, default: '' },
     absPath: { type: String },
+    rating: { type: Number, default: 1500 },
 });
 
 module.exports = db.model('ai', schema);

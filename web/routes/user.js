@@ -86,7 +86,7 @@ exports.showList = function(req, res) {
     User.count({}, function(err, count) {
         var page = Number(req.query.page || '1');
         var skip = settings.AIPerPage * (page-1);
-        var sort = req.query.sort || '-_id';
+        var sort = req.query.sort || '-rating';
 
         User.find({}).sort(sort).skip(skip).limit(settings.AIPerPage).exec(function(err, doc) {
             var info =utility.prepareRenderMessage(req);

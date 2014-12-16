@@ -4,10 +4,11 @@
 <thead>
   <tr>
     <td><a href="/user/list?sort=+name">Name</a></td>
+    <td><a href="/user/list?sort=-rating">Rating</a></td>
     <td><a href="/user/list?sort=-submit">Submit</td>
     <td><a href="/user/list?sort=-win">Win</a></td>
     <td><a href="/user/list?sort=-draw">Draw</a></td>
-    <td><a href="/user/list?sort=-lose">Lose</td>
+    <td><a href="/user/list?sort=-lose">Lose</a></td>
     <td></td>
   </tr>
 </thead>
@@ -15,6 +16,7 @@
 <% for (var i = 0; i < list.length; ++i) { var u = list[i]; %>
   <tr>
     <td><%= u.name %></td>
+    <td><%= u.rating %></td>
     <td><%= u.submit %></td>
     <td><span class="label label-success"><%= u.win %></span></td>
     <td><span class="label label-warning"><%= u.draw %></span></td>

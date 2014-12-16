@@ -7,7 +7,8 @@ var schema = new Schema({
     win: { type: Number, default: 0 },
     draw: { type: Number, default: 0 },
     lose: { type: Number, default: 0 },
-    submit: { type: Number, default: 0 }
+    submit: { type: Number, default: 0 },
+    rating: { type: Number, default: 1500 },
 });
 
 module.exports = db.model('user', schema);
