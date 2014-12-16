@@ -45,7 +45,7 @@ class Daemon:
                     f.write(r.content)
                 return
             except:
-                print '_getFile fail. id: %s, type: %s, response: %s' % (ID, dlType, r.content)
+                print '_getFile fail. id: %s, type: %s' % (ID, dlType)
                 time.sleep(random.random())
 
     def _uploadAI(self, ID, status, buildInfo, absPath=None):
@@ -60,7 +60,7 @@ class Daemon:
                 r = requests.post(const.CORE_SERVER + '/upload', data=data, files=files)
                 return r.json()
             except:
-                print '_uploadAI fail. response: %s' % r.content
+                print '_uploadAI fail. response:'
                 time.sleep(random.random())
 
     def _updateDBs(self, data):
@@ -69,7 +69,7 @@ class Daemon:
                 r = requests.post(const.CORE_SERVER + '/update', data={'data': toJSON(data), 'token': const.TOKEN})
                 return r.json()
             except:
-                print '_updateDBs fail. response: %s' % r.content
+                print '_updateDBs fail.'
                 time.sleep(random.random())
 
     def _updateDB(self, collection, where, value):
