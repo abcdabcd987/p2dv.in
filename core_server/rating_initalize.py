@@ -21,7 +21,7 @@ class Updater:
         self.db.updater.insert({'id': ObjectId('000000000000000000000000'), 'type': 'ai'})
 
     def _updateAIRating(self, timestamp):
-        lastid = self.db.updater.find_one({'type': 'ai'})['id']
+        lastid = self.lastid
         nowid = lastid
         (cnt0, cnt1) = (0, 0)
         ratingList = dict()
@@ -62,11 +62,10 @@ class Updater:
         for aid in ratingList:
             self.db.airatings.insert({'id': ObjectId(aid), 'rating': ratingList[aid], 'date': dt})
             cnt1 += 1
-        self.db.updater.update({'type': 'ai'}, {'$set': {'id': nowid}})
         return (cnt0, cnt1)
 
     def _updateUserRating(self, timestamp):
-        lastid = self.db.updater.find_one({'type': 'user'})['id']
+        lastid = self.lastid
         nowid = lastid
         (cnt0, cnt1) = (0, 0)
         ratingList = dict()
@@ -105,22 +104,33 @@ class Updater:
 
         dt = datetime.fromtimestamp(timestamp)
         for uname in ratingList:
-            udoc = self.db.users.find_one({'name': uname})
-            self.db.userratings.insert({'id': udoc['_id'], 'rating': ratingList[uname], 'date': dt})
+            self.db.userratings.insert({'id': self.userId[uname], 'rating': ratingList[uname], 'date': dt})
             cnt1 += 1
-        self.db.updater.update({'type': 'user'}, {'$set': {'id': nowid}})
+        self.lastid = nowid
         return (cnt0, cnt1)
 
     def Run(self):
         self._initDB()
         self._setupRatings()
+        self.lastid = ObjectId('000000000000000000000000')
+
+        self.userId = dict()
+        for user in self.db.users.find({}):
+            self.userId[user['name']] = user['_id']
 
         timestamp = 1416568800
+        lastrec = self.db.records.find_one({'_id': {'$gt': self.lastid}}, sort=[('_id', pymongo.ASCENDING)])
         while timestamp < time.time():
-            res1 = self._updateAIRating(timestamp)
-            res2 = self._updateUserRating(timestamp)
+            if time.mktime(lastrec['runDate'].timetuple()) <= timestamp:
+                res1 = self._updateAIRating(timestamp)
+                res2 = self._updateUserRating(timestamp)
+                lastrec = self.db.records.find_one({'_id': {'$gt': self.lastid}}, sort=[('_id', pymongo.ASCENDING)])
+            else:
+                res1, res2 = None, None
             print datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S'), res1, res2
             timestamp += 120
+        self.db.updater.update({'type': 'ai'}, {'$set': {'id': self.lastid}})
+        self.db.updater.update({'type': 'user'}, {'$set': {'id': self.lastid}})
 
 
 updater = Updater()
