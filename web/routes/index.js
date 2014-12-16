@@ -17,11 +17,13 @@ exports.setup = function(app) {
 	app.post('/user/register', user.execRegister);
 	app.get ('/user/logout', user.execLogout);
     app.get ('/user/list', user.showList);
+    app.get ('/user/:name/rating.json', user.getRatingJSON);
 
     app.get ('/ai/upload', ai.showUpload);
     app.post('/ai/upload', ai.execUpload);
     app.get ('/ai/list', ai.showList);
     app.get ('/ai/:id', ai.showStatus);
+    app.get ('/ai/:id/rating.json', ai.getRatingJSON);
 
     app.get ('/battle/list', battle.showList);
     app.post('/battle/start', battle.execStart);

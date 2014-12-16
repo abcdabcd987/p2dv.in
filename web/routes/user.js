@@ -1,7 +1,9 @@
+var moment = require('moment');
 var settings = require('../settings');
 var utility = require('./utility');
 var User = require('../models/user');
 var AI = require('../models/ai');
+var UserRating = require('../models/userrating');
 
 function setSessionLogin(req, user) {
     req.session.user = {
@@ -100,3 +102,24 @@ exports.showList = function(req, res) {
         });
     });
 }
+
+exports.getRatingJSON = function(req, res) {
+    var name = req.param('name');
+    User.findOne({name: name}, function(err, userdoc) {
+        if (err || !userdoc) {
+            res.send('404 Not Found!');
+            return;
+        }
+        UserRating.find({id: userdoc._id}).select({date:1, rating:1}).sort({_id:1}).exec(function(err, doc) {
+            result = { x: 'Date', xFormat: '%m-%d %H:%M', columns: [['Date'], ['Rating']] };
+            for (var i = 0; i < doc.length; ++i) {
+                var rating = doc[i].rating;
+                var date = moment(doc[i].date).format('MM-DD HH:mm');
+                result.columns[0].push(date);
+                result.columns[1].push(rating);
+            }
+            res.json(result);
+        })
+    });
+}
+

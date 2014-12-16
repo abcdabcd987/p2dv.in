@@ -1,5 +1,9 @@
 <% include head %>
 <% if (username) { %>
+<%   if (showRatingChart) { %>
+<h1>Rating Chart of <small><%= username %></small></h1>
+<div id="chart"></div>
+<%   } %>
 <h1>AI List of <small><%= username %></small></h1>
 <% } else { %>
 <h1>AI List</h1>
@@ -59,3 +63,11 @@
   </ul>
 </nav>
 <% include foot %>
+<% include foot_script %>
+<% if (showRatingChart) { %>
+<script src="<%= settings.staticCDN %>/js/d3.min.js"></script>
+<script src="<%= settings.staticCDN %>/js/c3.min.js"></script>
+<script src="<%= settings.staticCDN %>/js/rating.js"></script>
+<script>ratingChart.setup("/user/<%= username %>/rating.json")</script>
+<% } %>
+<% include foot_close %>

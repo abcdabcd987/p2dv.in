@@ -1,27 +1,21 @@
+#!/usr/bin/python2.7
 import pymongo
 from datetime import datetime
 from bson.objectid import ObjectId
 
 class Updater:
     def _initDB(self):
-        client = pymongo.MongoClient('localhost', 27017)
+        client = pymongo.MongoClient('localhost', 27017, w=1)
         self.db = client['p2dvin']
-
-    def _setupRatings(self):
-        for ai in self.db.ais.find({}):
-            self.db.ais.update({'_id': ai['_id']}, {'$set': {'rating': 1500}})
-            self.db.airatings.insert({'id': ai['_id'], 'rating': 1500, 'date': ai['uploadDate']})
-
-        for user in self.db.users.find({}):
-            self.db.users.update({'_id': user['_id']}, {'$set': {'rating': 1500}})
-            self.db.userratings.insert({'id': user['_id'], 'rating': 1500, 'date': user['registerDate']})
-
-        self.db.updater.insert({'id': ObjectId('000000000000000000000000'), 'type': 'user'})
-        self.db.updater.insert({'id': ObjectId('000000000000000000000000'), 'type': 'ai'})
 
     def _updateAIRating(self):
         lastid = self.db.updater.find_one({'type': 'ai'})['id']
         nowid = lastid
+
+        ratingList = dict()
+        for ai in self.db.ais.find({}):
+            ratingList[str(ai['_id'])] = ai['rating']
+
         for rec in self.db.records.find({'_id': {'$gt': lastid}}).sort('_id', 1):
             nowid = rec['_id']
             if rec['ids'][0] == rec['ids'][1]:
@@ -38,19 +32,29 @@ class Updater:
                 S0, S1 = 0, 1
             else:
                 S0, S1 = 0.5, 0.5
+            r0 = int(R0 + 42 * (S0 - E0))
+            r1 = int(R1 + 42 * (S1 - E1))
 
-            self.db.ais.update({'_id':rec['ids'][0]}, {'$set': {'rating':int(R0 + 42 * (S0 - E0))}})
-            self.db.ais.update({'_id':rec['ids'][1]}, {'$set': {'rating':int(R1 + 42 * (S1 - E1))}})
+            if r0 != R0:
+                self.db.ais.update({'_id':rec['ids'][0]}, {'$set': {'rating':r0}})
+            if r1 != R1:
+                self.db.ais.update({'_id':rec['ids'][1]}, {'$set': {'rating':r1}})
 
         if nowid == lastid:
             return
         for ai in self.db.ais.find({}):
-            self.db.airatings.insert({'id': ai['_id'], 'rating': ai['rating'], 'date': datetime.utcnow()})
+            if ai['rating'] != ratingList[str(ai['_id'])]:
+                self.db.airatings.insert({'id': ai['_id'], 'rating': ai['rating'], 'date': datetime.utcnow()})
         self.db.updater.update({'type': 'ai'}, {'$set': {'id': nowid}})
 
     def _updateUserRating(self):
         lastid = self.db.updater.find_one({'type': 'user'})['id']
         nowid = lastid
+
+        ratingList = dict()
+        for user in self.db.users.find({}):
+            ratingList[str(user['_id'])] = user['rating']
+
         for rec in self.db.records.find({'_id': {'$gt': lastid}}).sort('_id', 1):
             nowid = rec['_id']
             if rec['user0'] == rec['user1']:
@@ -67,18 +71,23 @@ class Updater:
                 S0, S1 = 0, 1
             else:
                 S0, S1 = 0.5, 0.5
-            self.db.users.update({'name':rec['user0']}, {'$set': {'rating':int(R0 + 16 * (S0 - E0))}})
-            self.db.users.update({'name':rec['user1']}, {'$set': {'rating':int(R1 + 16 * (S1 - E1))}})
+            r0 = int(R0 + 16 * (S0 - E0))
+            r1 = int(R1 + 16 * (S1 - E1))
+
+            if r0 != R0:
+                self.db.users.update({'name':rec['user0']}, {'$set': {'rating':r0}})
+            if r1 != R1:
+                self.db.users.update({'name':rec['user1']}, {'$set': {'rating':r1}})
 
         if nowid == lastid:
             return
         for user in self.db.users.find({}):
-            self.db.userratings.insert({'id': user['_id'], 'rating': user['rating'], 'date': datetime.utcnow()})
+            if user['rating'] != ratingList[str(user['_id'])]:
+                self.db.userratings.insert({'id': user['_id'], 'rating': user['rating'], 'date': datetime.utcnow()})
         self.db.updater.update({'type': 'user'}, {'$set': {'id': nowid}})
 
     def Run(self):
         self._initDB()
-        #self._setupRatings()
         self._updateAIRating()
         self._updateUserRating()
 
