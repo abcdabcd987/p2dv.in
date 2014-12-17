@@ -71,10 +71,13 @@ exports.execRegister = function(req, res) {
         password: settings.hashPassword(req.body.password),
     };
     var item = new User(info);
-    item.save(function(err) {
+    item.save(function(err, saved) {
         if (err) return fallback(['Username used']);
         setSessionLogin(req, info);
-        res.redirect('/');
+        var rating = new UserRating({id: saved._id});
+        rating.save(function(err, s) {
+            res.redirect('/');
+        })
     })
 };
 

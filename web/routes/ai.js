@@ -76,7 +76,10 @@ exports.execUpload = function(req, res) {
         item.save(function(err, saved) {
             if (err) return fallback(['Unknown Error']);
             User.update({name: req.session.user.name}, {$inc:{submit:1}}, function(err, num) {
-                res.redirect('/ai/' + saved.id);
+                var rating = new AIRating({id: saved._id});
+                rating.save(function(err, s) {
+                    res.redirect('/ai/' + saved.id);
+                })
             });
         });
     });
