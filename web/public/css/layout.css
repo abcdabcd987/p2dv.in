@@ -153,3 +153,23 @@ textarea, input[type="text"], input[type="password"] {
   margin-top: 0.5em;
   width: 453px;
 }
+
+.c3-region.rankcolor-0 { fill: rgb(200, 200, 200); }
+.c3-region.rankcolor-1 { fill: rgb(159, 238, 159); }
+.c3-region.rankcolor-2 { fill: rgb(119, 255, 119); }
+.c3-region.rankcolor-3 { fill: rgb(169, 169, 254); }
+.c3-region.rankcolor-4 { fill: rgb(253, 135, 253); }
+.c3-region.rankcolor-5 { fill: rgb(244, 195, 130); }
+.c3-region.rankcolor-6 { fill: rgb(255, 187, 85 ); }
+.c3-region.rankcolor-7 { fill: rgb(255, 119, 119); }
+.c3-region.rankcolor-8 { fill: rgb(253, 51 , 51 ); }
+
+.c3-region.rankcolor-0 rect,
+.c3-region.rankcolor-1 rect,
+.c3-region.rankcolor-2 rect,
+.c3-region.rankcolor-3 rect,
+.c3-region.rankcolor-4 rect,
+.c3-region.rankcolor-5 rect,
+.c3-region.rankcolor-6 rect,
+.c3-region.rankcolor-7 rect,
+.c3-region.rankcolor-8 rect { fill-opacity: 1 !important; }
