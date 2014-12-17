@@ -121,7 +121,10 @@ class Updater:
             self.records.append(rec)
 
         timestamp = self.db.updater.find_one({'type': 'timestamp'})['value']
-        lasttime = time.mktime(self.records[self.lastrow]['submitDate'].timetuple())
+        if self.lastrow == 0:
+            timebound = 0
+        else:
+            lasttime = time.mktime(self.records[self.lastrow]['submitDate'].timetuple())
         while timestamp < timebound:
             if self.records[self.lastrow]['status'] != 'Finished':
                 break
