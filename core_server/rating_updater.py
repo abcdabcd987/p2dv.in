@@ -115,7 +115,7 @@ class Updater:
         for user in self.db.users.find({}):
             self.userId[user['name']] = user['_id']
         self.records = []
-        timebound = time.mktime(datetime.utcnow().timetuple())
+        timebound = int(time.time())
         self.lastrow = 0
         for rec in self.db.records.find({'_id': {'$gt': self.lastid}}, fields={'log':False,'stderr0':False,'stderr1':False}).sort('_id', 1):
             self.records.append(rec)
