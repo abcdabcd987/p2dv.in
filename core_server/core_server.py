@@ -39,8 +39,22 @@ class TaskHandler(tornado.web.RequestHandler):
             mutex.release()
             return
 
-        doc = db.records.find_and_modify({'status':'Pending'}, update={'$set':{'status':'Running'}}, sort=[('_id', 1)])
+
+        running = set()
+        for rec in db.records.find({'status':'Running'}):
+            ids = (rec['ids'][0], rec['ids'][1])
+            running.add(ids)
+        doc = None
+        for rec in db.records.find({'status':'Pending'}, sort=[('_id', 1)]):
+            ids = (rec['ids'][0], rec['ids'][1])
+            if ids not in running:
+                doc = rec
+                break
+            if not doc:
+                doc = rec
+
         if doc:
+            db.records.update({'_id': doc['_id']}, {'$set':{'status':'Running'}})
             self.write(toJSON({ 'type': 'battle', 'doc': doc }))
             mutex.release()
             return
