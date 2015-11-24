@@ -313,7 +313,7 @@ Demo = {
 
     nextClick: function nextClick(e) {
         e.preventDefault();
-        if (Demo.playing < Demo.data.step.length-1) {
+        if (Demo.playing < Demo.data.step.length - 1) {
             Demo.btnNext.prop('disabled', true);
             Demo.btnPlay.prop('disabled', true);
             Demo.btnPrev.prop('disabled', true);

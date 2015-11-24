@@ -71,33 +71,33 @@ Demo = {
 	},
 
 	getImg : function getImg(chess) {
-		if (chess[0] ==  0) {
+		if (chess[0] ===  0) {
 			return '';
 		}
-		if (chess[1] == true && Demo.hideChess == true) {
+		if (chess[1] === true && Demo.hideChess === true) {
 			return 'img-blank';
 		} else {
-			if (chess[0] == -7) {return 'img-chess img-black-7';}
-			if (chess[0] == -6) {return 'img-chess img-black-6';}
-			if (chess[0] == -5) {return 'img-chess img-black-5';}
-			if (chess[0] == -4) {return 'img-chess img-black-4';}
-			if (chess[0] == -3) {return 'img-chess img-black-3';}
-			if (chess[0] == -2) {return 'img-chess img-black-2';}
-			if (chess[0] == -1) {return 'img-chess img-black-1';}
-			if (chess[0] ==  7) {return 'img-chess img-red-7';}
-			if (chess[0] ==  6) {return 'img-chess img-red-6';}
-			if (chess[0] ==  5) {return 'img-chess img-red-5';}
-			if (chess[0] ==  4) {return 'img-chess img-red-4';}
-			if (chess[0] ==  3) {return 'img-chess img-red-3';}
-			if (chess[0] ==  2) {return 'img-chess img-red-2';}
-			if (chess[0] ==  1) {return 'img-chess img-red-1';}
+			if (chess[0] === -7) {return 'img-chess img-black-7';}
+			if (chess[0] === -6) {return 'img-chess img-black-6';}
+			if (chess[0] === -5) {return 'img-chess img-black-5';}
+			if (chess[0] === -4) {return 'img-chess img-black-4';}
+			if (chess[0] === -3) {return 'img-chess img-black-3';}
+			if (chess[0] === -2) {return 'img-chess img-black-2';}
+			if (chess[0] === -1) {return 'img-chess img-black-1';}
+			if (chess[0] ===  7) {return 'img-chess img-red-7';}
+			if (chess[0] ===  6) {return 'img-chess img-red-6';}
+			if (chess[0] ===  5) {return 'img-chess img-red-5';}
+			if (chess[0] ===  4) {return 'img-chess img-red-4';}
+			if (chess[0] ===  3) {return 'img-chess img-red-3';}
+			if (chess[0] ===  2) {return 'img-chess img-red-2';}
+			if (chess[0] ===  1) {return 'img-chess img-red-1';}
 		}
 	},
 
 	flushBoard : function flushBoard() {
 		for (var i = 0; i < 4; ++i) {
 			for (var j = 0; j < 8; ++j) {
-				var img = Demo.getImg(oldBoard[Demo.data.step.length - 1][i][j]);
+				var img = Demo.getImg(oldBoard[Demo.playing][i][j]);
 				Demo.getBox(i, j).attr('class', img);
 			}
 		}
@@ -117,11 +117,12 @@ Demo = {
 	getData: function getData() {
 		$.getJSON(Demo.jsonURL, function(dt) {
 			Demo.data = dt;
+			console.log(dt.step.length);
 			Demo.prepare();
 			Demo.setupInvalidList();
 			Demo.btnPlay.prop('disabled', false);
 			Demo.spanPlay.html('');
-			Demo.playing = dt.step.length-1;
+			Demo.playing = dt.step.length - 1;
 			Demo.isPause = true;
 			Demo.spanPlay.attr('class', 'glyphicon glyphicon-play');
 			Demo.setControls();
@@ -147,6 +148,25 @@ Demo = {
 			Demo.btnNext.prop('disabled', true);
 		}
 		Demo.btnPlay.prop('disabled', false);
+	},
+
+	updateText: function updateText() {
+	    var i = Demo.playing;
+	    var step = Demo.data.step[i];
+
+	    if (step.player === 0) {
+	        Demo.demoText.attr('class', 'bg-success');
+	    } else {
+	        Demo.demoText.attr('class', 'bg-warning');
+	    }
+
+	    if (step.valid) {
+	        Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> Move (' + step.source[0] + ',' + step.source[1] + ') to (' + step.target[0] + ',' + step.target[1] + ')');
+	    } else {
+	        Demo.demoText.attr('class', 'bg-danger');
+	        var info = step.message || 'Invalid Operation! (No Details)';
+	        Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> ' + info);
+	    }
 	},
 
 	cloneObject : function cloneObject(objectToBeCloned) {
@@ -203,10 +223,129 @@ Demo = {
 		}
 	},
 
+	moveChess: function moveChess(sx, sy, tx, ty) {
+		console.log('moveChess called');
+		console.log([sx, sy, tx, ty]);
+		var source = Demo.getBox(sx, sy);
+		var target = Demo.getBox(tx, ty);
+		if (sx == tx && sy == ty) {
+			console.log("Operation flip");
+			console.log(Demo.getImg(oldBoard[Demo.playing + 1][tx][ty]));
+			target.attr('class', Demo.getImg(oldBoard[Demo.playing + 1][tx][ty]));
+			Demo.setControls();
+			if (!Demo.isPause) {
+				++Demo.playing;
+				Demo.timeoutID = setTimeout(Demo.draw, Demo.interval);
+			}
+		} else {
+			Demo.floatChess.attr('class', source.attr('class'));
+			Demo.floatChess.offset(source.offset());
+
+			source.attr('class', '');
+
+			Demo.floatChess.animate(target.offset(), Demo.interval, function() {
+				target.attr('class', Demo.floatChess.attr('class'));
+				Demo.floatChess.addClass('hidden');
+				Demo.setControls();
+				if (!Demo.isPause) {
+					++Demo.playing;
+					Demo.timeoutID = setTimeout(Demo.draw, Demo.interval);
+				}
+			});
+		}
+	},
+
+	draw: function draw() {
+		console.log('Draw called.');
+		console.log(Demo.playing);
+
+		var i = Demo.playing;
+		var step = Demo.data.step[i];
+
+		if (i === Demo.data.step.length) {
+			Demo.isPause = true;
+			Demo.spanPlay.attr('class', 'glyphicon glyphicon-play');
+			return;
+		}
+
+		Demo.updateText();
+
+		Demo.moveChess(step.posx, step.posy, step.tox, step.toy);
+	},
+
+	playDemo: function playDemo() {
+        Demo.drawTable();
+        Demo.putChess();
+
+        Demo.playing = 0;
+        Demo.timeoutID = setTimeout(Demo.draw, Demo.interval);
+    },
+
+    drawPrev: function drawPrev() {
+        Demo.drawTable();
+        Demo.putChess();
+
+        Demo.flushBoard();
+
+        Demo.setControls();
+        Demo.updateText();
+    },
+
+	prevClick: function prevClick(e) {
+		e.preventDefault();
+		if (Demo.playing > 0) {
+			Demo.btnNext.prop('disabled', true);
+			Demo.btnPlay.prop('disabled', true);
+			Demo.btnPrev.prop('disabled', true);
+			--Demo.playing;
+			setTimeout(Demo.drawPrev, 0);
+		}
+		$(this).blur();
+		return false;
+	},
+
+	playClick: function playClick(e) {
+		e.preventDefault();
+		if (Demo.isPause) {
+			Demo.isPause = false;
+			++Demo.playing;
+			Demo.spanPlay.attr('class', 'glyphicon glyphicon-pause');
+			Demo.btnPrev.attr('disabled', true);
+			Demo.btnNext.attr('disabled', true);
+			if (Demo.playing >= Demo.data.step.length) {
+				Demo.playDemo();
+			} else {
+				Demo.timeoutID = setTimeout(Demo.draw, Demo.interval);
+			}
+		} else {
+			clearTimeout(Demo.timeoutID);
+			--Demo.playing;
+			Demo.isPause = true;
+			Demo.spanPlay.attr('class', 'glyphicon glyphicon-play');
+			Demo.setControls();
+		}
+		$(this).blur();
+		return false;
+	},
+
+	nextClick: function nextClick(e) {
+		e.preventDefault();
+		console.log('Next Clicked');
+		if (Demo.playing < Demo.data.step.length - 1) {
+			Demo.btnNext.prop('disabled', true);
+			Demo.btnPlay.prop('disabled', true);
+			Demo.btnPrev.prop('disabled', true);
+			++Demo.playing;
+			Demo.draw();
+		}
+		$(this).blur();
+		return false;
+	},
+
 	bindEvents: function bindEvents() {
-		// Demo.btnPrev.on('click', Demo.prevClick);
-		// Demo.btnPlay.on('click', Demo.playClick);
-		// Demo.btnNext.on('click', Demo.nextClick);
+		Demo.btnPrev.on('click', Demo.prevClick);
+		Demo.btnPlay.on('click', Demo.playClick);
+		Demo.btnNext.on('click', Demo.nextClick);
 
 		$("#btn-speed-slow")  .on('click', function(){Demo.interval=500});
 		$("#btn-speed-normal").on('click', function(){Demo.interval=200});
