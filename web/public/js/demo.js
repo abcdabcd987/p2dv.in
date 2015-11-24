@@ -38,7 +38,7 @@ Demo = {
         optList = [[], []];
         for (var i = 0; i < 4; ++i) {
             for (var j = 0; j < 8; ++j) {
-                chessData[i][j] = data.initChess[i][j]; 
+                chessData[i][j] = data.initChess[i][j];
             }
         }
         for (var i = 0; i < data.step.length; ++i) {
@@ -129,7 +129,7 @@ Demo = {
         if (sx == tx && sy == ty) {
             target.attr('class', Demo.)
         } else {
-            var source = Demo.getBox(sx, sy);
+            var so   urce = Demo.getBox(sx, sy);
             var target = Demo.getBox(tx, ty);
             Demo.floatChess.attr('class', source.attr('class'));
             Demo.floatChess.offset(source.offset());
