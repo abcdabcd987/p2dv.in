@@ -1,6 +1,7 @@
 Demo = {
     // Variables:
     interval  : 200,
+    hideChess : true,
     jsonURL   : undefined,
     playing   : undefined,
     pause     : undefined,
@@ -9,7 +10,6 @@ Demo = {
     // DOM:
     board     : undefined,
     floatChess: undefined,
-    hideChess : undefined,
     data      : undefined,
     demoText  : undefined,
     btnNext   : undefined,
@@ -19,9 +19,8 @@ Demo = {
     spanPlay  : undefined,
     spanPrev  : undefined,
 
-    //Runtime data:
-    chessData : undefined,
-    optList : undefined,
+    //Demo Runtime Data
+    oldBoard : undefined,
 
     // Functions:
     getBox: function getBox(i, j) {
@@ -29,35 +28,7 @@ Demo = {
     },
 
     drawTable: function drawTable() {
-        chessData = [
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0],
-        ];
-        optList = [[], []];
-        for (var i = 0; i < 4; ++i) {
-            for (var j = 0; j < 8; ++j) {
-                chessData[i][j] = data.initChess[i][j];
-            }
-        }
-        for (var i = 0; i < data.step.length; ++i) {
-            var x = data.step.source[0];
-            var y = data.step.source[1];
-            var xx = data.step.target[0];
-            var yy = data.step.target[1];
-            if (xx == x && yy == y) {
-                optList[0].push([x, y, chessData[x][y]]);
-                optList[1].push([xx, yy, chessData[xx][yy]]);
-            } else {
-                optList[0].push([x, y, chessData[x][y]]);
-                optList[1].push([xx, yy, chessData[xx][yy]]);
-                chessData[xx][yy] = chessData[x][y];
-                chessData[x][y] = 0;
-            }
-        }
         var table = $('<table id="chess-board">');
-        table.append('<tr><td colspan="8" class="ai1 td-ai-name">AI2</td></tr>');
         for (var i = 0; i < 4; ++i) {
             var tr = $('<tr id="row-' + i + '">');
             for (var j = 0; j < 8; ++j) {
@@ -68,108 +39,70 @@ Demo = {
             }
             table.append(tr);
         }
-        table.append('<tr><td colspan="8" class="ai0 td-ai-name">AI1</td></tr>');
         Demo.board.replaceWith(table);
         Demo.board = $('#chess-board');
     },
 
     putChess: function putChess() {
-
         for (var i = 0; i < 4; ++i) {
             for (var j = 0; j < 8; ++j) {
-                Demo.getBox(i, j).addClass('img-hide');
+                Demo.getBox(i, j).addClass('img-blank');
             }
         }
-/*
-        Demo.getBox(0, 0).addClass('ai0').addClass('img-5');
-        Demo.getBox(0, 2).addClass('ai0').addClass('img-trap').data('default-css', 'ai0 img-trap');
-        Demo.getBox(0, 3).addClass('ai0').addClass('img-cave');
-        Demo.getBox(0, 4).addClass('ai0').addClass('img-trap').data('default-css', 'ai0 img-trap');
-        Demo.getBox(0, 6).addClass('ai0').addClass('img-6');
-        Demo.getBox(1, 1).addClass('ai0').addClass('img-1');
-        Demo.getBox(1, 3).addClass('ai0').addClass('img-trap').data('default-css', 'ai0 img-trap');
-        Demo.getBox(1, 5).addClass('ai0').addClass('img-3');
-        Demo.getBox(2, 0).addClass('ai0').addClass('img-7');
-        Demo.getBox(2, 2).addClass('ai0').addClass('img-2');
-        Demo.getBox(2, 4).addClass('ai0').addClass('img-4');
-        Demo.getBox(2, 6).addClass('ai0').addClass('img-0');
-
-        Demo.getBox(8, 6).addClass('ai1').addClass('img-5');
-        Demo.getBox(8, 4).addClass('ai1').addClass('img-trap').data('default-css', 'ai1 img-trap');
-        Demo.getBox(8, 3).addClass('ai1').addClass('img-cave');
-        Demo.getBox(8, 2).addClass('ai1').addClass('img-trap').data('default-css', 'ai1 img-trap');
-        Demo.getBox(8, 0).addClass('ai1').addClass('img-6');
-        Demo.getBox(7, 5).addClass('ai1').addClass('img-1');
-        Demo.getBox(7, 3).addClass('ai1').addClass('img-trap').data('default-css', 'ai1 img-trap');
-        Demo.getBox(7, 1).addClass('ai1').addClass('img-3');
-        Demo.getBox(6, 6).addClass('ai1').addClass('img-7');
-        Demo.getBox(6, 4).addClass('ai1').addClass('img-2');
-        Demo.getBox(6, 2).addClass('ai1').addClass('img-4');
-        Demo.getBox(6, 0).addClass('ai1').addClass('img-0');
-
-        Demo.getBox(3, 1).addClass('river').data('default-css', 'river');
-        Demo.getBox(4, 1).addClass('river').data('default-css', 'river');
-        Demo.getBox(5, 1).addClass('river').data('default-css', 'river');
-        Demo.getBox(3, 2).addClass('river').data('default-css', 'river');
-        Demo.getBox(4, 2).addClass('river').data('default-css', 'river');
-        Demo.getBox(5, 2).addClass('river').data('default-css', 'river');
-        Demo.getBox(3, 4).addClass('river').data('default-css', 'river');
-        Demo.getBox(4, 4).addClass('river').data('default-css', 'river');
-        Demo.getBox(5, 4).addClass('river').data('default-css', 'river');
-        Demo.getBox(3, 5).addClass('river').data('default-css', 'river');
-        Demo.getBox(4, 5).addClass('river').data('default-css', 'river');
-        Demo.getBox(5, 5).addClass('river').data('default-css', 'river');
-*/
-    },
-    flipChess: function flipChess(x, y) {
-        Demo.getBox(x, y)
     },
 
-    moveChess: function moveChess(sx, sy, tx, ty) {
-        if (sx == tx && sy == ty) {
-            target.attr('class', Demo.)
+    getImg : function getImg(chess) {
+        if (chess[0] ===  0) {
+            return '';
+        }
+        if (chess[1] === true && Demo.hideChess === true) {
+            return 'img-blank';
         } else {
-            var so   urce = Demo.getBox(sx, sy);
-            var target = Demo.getBox(tx, ty);
-            Demo.floatChess.attr('class', source.attr('class'));
-            Demo.floatChess.offset(source.offset());
+            if (chess[0] === -7) {return 'img-chess img-black-7';}
+            if (chess[0] === -6) {return 'img-chess img-black-6';}
+            if (chess[0] === -5) {return 'img-chess img-black-5';}
+            if (chess[0] === -4) {return 'img-chess img-black-4';}
+            if (chess[0] === -3) {return 'img-chess img-black-3';}
+            if (chess[0] === -2) {return 'img-chess img-black-2';}
+            if (chess[0] === -1) {return 'img-chess img-black-1';}
+            if (chess[0] ===  7) {return 'img-chess img-red-7';}
+            if (chess[0] ===  6) {return 'img-chess img-red-6';}
+            if (chess[0] ===  5) {return 'img-chess img-red-5';}
+            if (chess[0] ===  4) {return 'img-chess img-red-4';}
+            if (chess[0] ===  3) {return 'img-chess img-red-3';}
+            if (chess[0] ===  2) {return 'img-chess img-red-2';}
+            if (chess[0] ===  1) {return 'img-chess img-red-1';}
+        }
+    },
 
-            if (source.data('default-css')) {
-                source.attr('class', source.data('default-css'));
-            } else {
-                source.attr('class', '');
+    flushBoard : function flushBoard() {
+        for (var i = 0; i < 4; ++i) {
+            for (var j = 0; j < 8; ++j) {
+                var img = Demo.getImg(oldBoard[Demo.playing][i][j]);
+                Demo.getBox(i, j).attr('class', img);
             }
-
-            Demo.floatChess.animate(target.offset(), Demo.interval, function() {
-                target.attr('class', Demo.floatChess.attr('class'));
-                Demo.floatChess.addClass('hidden');
-                Demo.setControls();
-                if (!Demo.isPause) {
-                    ++Demo.playing;
-                    Demo.timeoutID = setTimeout(Demo.draw, Demo.interval);
-                }
-            });
         }
     },
 
     setupInvalidList: function setupInvalidList() {
-        var ul = $('#invalid-list');
-        for (var i = 0; i < Demo.data.step.length; ++i) {
-            var step = Demo.data.step[i];
-            if (!step.valid) {
-                var info = step.message || 'Invalid Operation! (No Details)';
-                ul.append('<li class="list-group-item"><strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> ' + info + '</li>');
-            }
-        }
+        // var ul = $('#invalid-list');
+        // for (var i = 0; i < Demo.data.step.length; ++i) {
+        //     var step = Demo.data.step[i];
+        //     if (!step.valid) {
+        //         var info = step.message || 'Invalid Operation! (No Details)';
+        //         ul.append('<li class="list-group-item"><strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> ' + info + '</li>');
+        //     }
+        // }
     },
 
     getData: function getData() {
         $.getJSON(Demo.jsonURL, function(dt) {
             Demo.data = dt;
+            Demo.prepare();
             Demo.setupInvalidList();
             Demo.btnPlay.prop('disabled', false);
             Demo.spanPlay.html('');
-            Demo.playing = dt.step.length-1;
+            Demo.playing = dt.step.length - 1;
             Demo.isPause = true;
             Demo.spanPlay.attr('class', 'glyphicon glyphicon-play');
             Demo.setControls();
@@ -207,12 +140,102 @@ Demo = {
             Demo.demoText.attr('class', 'bg-warning');
         }
 
-        if (step.valid) {
-            Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> Move (' + step.source[0] + ',' + step.source[1] + ') to (' + step.target[0] + ',' + step.target[1] + ')');
+        if (Demo.playing === -1) {
+            Demo.demoText.html('<strong>initial chessboard</strong>');
+        }
+
+        if (step.posx == step.tox && step.posy == step.toy) {
+            Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Reverse (' + step.posx + ',' + step.posy + ')');
         } else {
-            Demo.demoText.attr('class', 'bg-danger');
-            var info = step.message || 'Invalid Operation! (No Details)';
-            Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> ' + info);
+            Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Move (' + step.posx + ',' + step.posy + ') to (' + step.tox + ',' + step.toy + ')');
+        }
+    },
+
+    cloneObject : function cloneObject(objectToBeCloned) {
+        // Basis.
+        if (!(objectToBeCloned instanceof Object)) {
+            return objectToBeCloned;
+        }
+
+        var objectClone;
+
+        var Constructor = objectToBeCloned.constructor;
+        switch (Constructor) {
+            case RegExp:
+                objectClone = new Constructor(objectToBeCloned);
+                break;
+            case Date:
+                objectClone = new Constructor(objectToBeCloned.getTime());
+                break;
+            default:
+                objectClone = new Constructor();
+        }
+
+        for (var prop in objectToBeCloned) {
+            objectClone[prop] = Demo.cloneObject(objectToBeCloned[prop]);
+        }
+        return objectClone;
+    },
+
+    prepare : function prepare() {
+        var curBoard = [[],[],[],[]];
+        for (var i = 0; i < 4; ++i) {
+            for (var j = 0; j < 8; ++j) {
+                if (Demo.data["init-board"][i][j].color == 0) {
+                    curBoard[i].push([Demo.data["init-board"][i][j].kind + 1, true]);
+                } else if (Demo.data["init-board"][i][j].color == 1) {
+                    curBoard[i].push([-(Demo.data["init-board"][i][j].kind + 1), true]);
+                }
+            }
+        }
+        oldBoard = [];
+        for (var i = 0; i < Demo.data.step.length; ++i) {
+            var x = Demo.data.step[i].posx;
+            var y = Demo.data.step[i].posy;
+            var xx = Demo.data.step[i].tox;
+            var yy = Demo.data.step[i].toy;
+            if (x == xx && y == yy) {
+                curBoard[x][y][1] = false;
+            } else {
+                curBoard[xx][yy] = Demo.cloneObject(curBoard[x][y]);
+                curBoard[x][y] = [0, false];
+            }
+            oldBoard.push(Demo.cloneObject(curBoard));
+        }
+
+        function set_ai_color_span(id, jdom) {
+            if (id == 0) jdom.attr('class', 'label label-danger').html('红');
+            else jdom.attr('class', 'label label-success').html('黑');
+        }
+        set_ai_color_span(Demo.data.id[0], $('#span-ai1-color'));
+        set_ai_color_span(Demo.data.id[1], $('#span-ai2-color'));
+    },
+
+    moveChess: function moveChess(sx, sy, tx, ty) {
+        var source = Demo.getBox(sx, sy);
+        var target = Demo.getBox(tx, ty);
+        if (sx == tx && sy == ty) {
+            target.attr('class', Demo.getImg(oldBoard[Demo.playing][tx][ty]));
+            Demo.setControls();
+            if (!Demo.isPause) {
+                ++Demo.playing;
+                Demo.timeoutID = setTimeout(Demo.draw, Demo.interval);
+            }
+        } else {
+            Demo.floatChess.attr('class', source.attr('class'));
+            Demo.floatChess.offset(source.offset());
+
+            source.attr('class', '');
+
+            Demo.floatChess.animate(target.offset(), Demo.interval, function() {
+                target.attr('class', Demo.floatChess.attr('class'));
+                Demo.floatChess.addClass('hidden');
+                Demo.setControls();
+                if (!Demo.isPause) {
+                    ++Demo.playing;
+                    Demo.timeoutID = setTimeout(Demo.draw, Demo.interval);
+                }
+            });
         }
     },
 
@@ -228,15 +251,24 @@ Demo = {
 
         Demo.updateText();
 
-        if (step.valid) {
-            Demo.moveChess(step.source[0], step.source[1], step.target[0], step.target[1]);
-        } else {
-            Demo.setControls();
-            if (!Demo.isPause) {
-                ++Demo.playing;
-                Demo.timeoutID = setTimeout(Demo.draw, Demo.interval*2);
-            }
+        Demo.moveChess(step.posx, step.posy, step.tox, step.toy);
+    },
+
+    drawNext: function drawNext() {
+
+        ++Demo.playing;
+        var i = Demo.playing;
+        var step = Demo.data.step[i];
+
+        if (i === Demo.data.step.length) {
+            Demo.isPause = true;
+            Demo.spanPlay.attr('class', 'glyphicon glyphicon-play');
+            return;
         }
+
+        Demo.moveChess(step.posx, step.posy, step.tox, step.toy);
+        Demo.updateText();
+
     },
 
     playDemo: function playDemo() {
@@ -247,28 +279,11 @@ Demo = {
         Demo.timeoutID = setTimeout(Demo.draw, Demo.interval);
     },
 
-    quickMove: function quickMove(sx, sy, tx, ty) {
-        var source = Demo.getBox(sx, sy);
-        var target = Demo.getBox(tx, ty);
-
-        target.attr('class', source.attr('class'));
-        if (source.data('default-css')) {
-            source.attr('class', source.data('default-css'));
-        } else {
-            source.attr('class', '');
-        }
-    },
-
     drawPrev: function drawPrev() {
         Demo.drawTable();
         Demo.putChess();
 
-        for (var i = 0; i <= Demo.playing; ++i) {
-            var step = Demo.data.step[i];
-            if (step.valid) {
-                Demo.quickMove(step.source[0], step.source[1], step.target[0], step.target[1]);
-            }
-        }
+        Demo.flushBoard();
 
         Demo.setControls();
         Demo.updateText();
@@ -313,12 +328,11 @@ Demo = {
 
     nextClick: function nextClick(e) {
         e.preventDefault();
-        if (Demo.playing < Demo.data.step.length - 1) {
+        if (Demo.playing < Demo.data.step.length) {
             Demo.btnNext.prop('disabled', true);
             Demo.btnPlay.prop('disabled', true);
             Demo.btnPrev.prop('disabled', true);
-            ++Demo.playing;
-            Demo.draw();
+            Demo.drawNext();
         }
         $(this).blur();
         return false;
@@ -332,10 +346,16 @@ Demo = {
         $("#btn-speed-slow")  .on('click', function(){Demo.interval=500});
         $("#btn-speed-normal").on('click', function(){Demo.interval=200});
         $("#btn-speed-fast")  .on('click', function(){Demo.interval= 50});
+
+        $("#btn-chess-show").on('click', function(){Demo.hideChess = false;Demo.flushBoard()});
+        $("#btn-chess-hide").on('click', function(){Demo.hideChess =  true;Demo.flushBoard()});
     },
 
     setup: function setup(jsonURL) {
         Demo.jsonURL = jsonURL;
+
+        Demo.board      = $('#chess-board');
+        Demo.floatChess = $('#float-chess');
 
         Demo.board      = $('#chess-board');
         Demo.floatChess = $('#float-chess');
@@ -346,6 +366,7 @@ Demo = {
         Demo.spanPrev   = $('#span-prev');
         Demo.spanPlay   = $('#span-play');
         Demo.spanNext   = $('#span-next');
+
 
         Demo.drawTable();
         Demo.putChess();

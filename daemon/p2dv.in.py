@@ -51,7 +51,7 @@ class Daemon:
     def _uploadAI(self, ID, status, buildInfo, absPath=None):
         while True:
             try:
-                print '    Uploading AI ... %s ... %s ... %s' % (ID, status, absPath)
+                print '      Uploading AI ... %s ... %s ... %s' % (ID, status, absPath)
                 data = { 'info': buildInfo, 'status': status, 'token': const.TOKEN, 'id': ID }
                 if status == 'Available':
                     files = {'ai': open(absPath, 'rb')}
@@ -66,7 +66,7 @@ class Daemon:
     def _uploadText(self, absPath):
         while True:
             try:
-                print '    Uploading Text ... %s' % absPath
+                print '      Uploading Text ... %s' % absPath
                 data = { 'token': const.TOKEN }
                 with open(absPath, 'rb') as f:
                     files = {'text': f}

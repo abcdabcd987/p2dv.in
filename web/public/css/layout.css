@@ -61,14 +61,14 @@ textarea, input[type="text"], input[type="password"] {
 }
 
 #chess-board td {
-  height: 64px;
-  width: 64px;
+  height: 65px;
+  width: 65px;
   border: 5px solid #eee;
 }
 
 #float-chess {
-  height: 64px;
-  width: 64px;
+  height: 65px;
+  width: 65px;
   border: 5px solid #eee;
 }
 
@@ -80,71 +80,35 @@ textarea, input[type="text"], input[type="password"] {
   position: absolute;
 }
 
-/*#box-3-1, #box-3-2, #box-4-1, #box-4-2, #box-5-1, #box-5-2,
-#box-3-4, #box-3-5, #box-4-4, #box-4-5, #box-5-4, #box-5-5 {
-  background: #eee;
-}*/
-
-.river {
-  background: #eee;
+.img-chess {
+  background-image: url(/images/chess_pieces.png);
 }
 
-#box-3-1, #box-3-4 { 
-  border-bottom: 5px solid #eee;
-  border-right: 5px solid #eee;
+.img-blank {
+  background-image: url(/images/chess_blank.png);
 }
 
-#box-3-2, #box-3-5 { 
-  border-bottom: 5px solid #eee;
-  border-left: 5px solid #eee;
+.img-blank, .img-chess {
+  background-repeat: no-repeat;
+  width: 65px;
+  height: 65px;
 }
 
-#box-4-1, #box-4-4 { 
-  border-top: 5px solid #eee;
-  border-bottom: 5px solid #eee;
-  border-right: 5px solid #eee;
-}
+.img-red-1 { background-position:    0px 0px; }
+.img-red-2 { background-position:  -60px 0px; }
+.img-red-5 { background-position: -120px 0px; }
+.img-red-3 { background-position: -180px 0px; }
+.img-red-4 { background-position: -240px 0px; }
+.img-red-6 { background-position: -300px 0px; }
+.img-red-7 { background-position: -360px 0px; }
 
-#box-4-2, #box-4-5 { 
-  border-top: 5px solid #eee;
-  border-bottom: 5px solid #eee;
-  border-left: 5px solid #eee;
-}
-
-#box-5-1, #box-5-4 { 
-  border-top: 5px solid #eee;
-  border-right: 5px solid #eee;
-}
-
-#box-5-2, #box-5-5 { 
-  border-top: 5px solid #eee;
-  border-left: 5px solid #eee;
-}
-
-.img-trap { background: url(/images/trap.png); }
-.img-cave { background: url(/images/cave.png); }
-.img-0 { background: url(/images/0.png); }
-.img-1 { background: url(/images/1.png); }
-.img-2 { background: url(/images/2.png); }
-.img-3 { background: url(/images/3.png); }
-.img-4 { background: url(/images/4.png); }
-.img-5 { background: url(/images/5.png); }
-.img-6 { background: url(/images/6.png); }
-.img-7 { background: url(/images/7.png); }
-
-.ai0 {
-  background-color: #10765C;
-}
-
-.ai1 {
-  background-color: #764610;
-}
-
-.td-ai-name {
-  line-height: 1.2em;
-  height: 1.2em !important;
-  text-align: center;
-}
+.img-black-1 { background-position:    0px -60px; }
+.img-black-2 { background-position:  -60px -60px; }
+.img-black-5 { background-position: -120px -60px; }
+.img-black-3 { background-position: -180px -60px; }
+.img-black-4 { background-position: -240px -60px; }
+.img-black-6 { background-position: -300px -60px; }
+.img-black-7 { background-position: -360px -60px; }
 
 #demo-text {
   line-height: 2em;

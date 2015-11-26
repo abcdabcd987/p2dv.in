@@ -14,21 +14,34 @@
     <dt>Status</dt><dd><span id="span-status" class="label label-warning"><%= rec.status %></span></dd>
     <dt>Current Steps</dt><dd id="dd-steps"><img src="/images/jumping-ball.gif"><span id="span-steps">loading</span></dd>
   <% } else { %>
-    <dt>AI 1</dt><dd><a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small>
-      <a href="/battle/<%= rec._id %>/stderr/1/<%=: rec.submitDate | formatDate %> [AI1]<%= rec.name0 %>.txt">(stderr)</a></dd>
-    <dt>AI 2</dt><dd><a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small>
-      <a href="/battle/<%= rec._id %>/stderr/2/<%=: rec.submitDate | formatDate %> [AI2]<%= rec.name1 %>.txt">(stderr)</a></dd>
+    <dt>AI 1</dt>
+    <dd>
+      <span id="span-ai1-color"></span>
+      <a href="/ai/<%= rec.ids[0] %>"><%= rec.name0 %></a> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small>
+      <small>[
+        <a href="/battle/<%= rec._id %>/stdin0.log">stdin</a> / 
+        <a href="/battle/<%= rec._id %>/stdout0.log">stdout</a> / 
+        <a href="/battle/<%= rec._id %>/stderr0.log">stderr</a>
+      ]</small>
+    </dd>
+    <dt>AI 2</dt>
+    <dd>
+      <span id="span-ai2-color"></span>
+      <a href="/ai/<%= rec.ids[1] %>"><%= rec.name1 %></a> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small>
+      <small>[
+        <a href="/battle/<%= rec._id %>/stdin1.log">stdin</a> / 
+        <a href="/battle/<%= rec._id %>/stdout1.log">stdout</a> / 
+        <a href="/battle/<%= rec._id %>/stderr1.log">stderr</a>
+      ]</small>
+    </dd>
     <dt>Battle Date</dt><dd><%=: rec.runDate | formatDate %></dd>
-    <dt>Status</dt><dd><%= rec.status %></dd>
     <dt>Total Steps</dt><dd><%= rec.step %></dd>
     <% if (rec.result == 0) { %>
-      <dt>Winner</dt><dd><span class="label label-success"><%= rec.name0 %> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></span></dd>
-      <dt>Loser</dt><dd><span class="label label-danger"><%= rec.name1 %> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></span></dd>
+      <dt>Winner</dt><dd>AI 1</dd>
     <% } else if (rec.result == 1) { %>
-      <dt>Winner</dt><dd><span class="label label-success"><%= rec.name1 %> of <small><%= rec.user1 %> (<%= rec.idOfUser1 %>)</small></span></dd>
-      <dt>Loser</dt><dd><span class="label label-danger"><%= rec.name0 %> of <small><%= rec.user0 %> (<%= rec.idOfUser0 %>)</small></span></dd>
+      <dt>Winner</dt><dd>AI 2</dd>
     <% } else if (rec.result == 2) { %>
-      <dt>Result</dt><dd><span class="label label-warning">Draw</span></dd>
+      <dt>Result</dt><dd>Draw</dd>
     <% } %>
   <% } %>
 </dl>
@@ -49,8 +62,8 @@
       <button id="btn-speed-fast" class="btn btn-sm btn-danger">Fast</button>
     </div>
     <div class="btn-group noselect">
-      <button id="btn-chess-show" class="btn btn-sm btn-success">Show</button>
-      <button id="btn-speed-hide" class="btn btn-sm btn-danger">Hide</button>
+      <button id="btn-chess-show" class="btn btn-sm btn-warning">Show</button>
+      <button id="btn-chess-hide" class="btn btn-sm btn-success">Hide</button>
     </div>
   </div>
   <p id="demo-text" class="bg-primary">Total Step: <%= rec.step %></p>
