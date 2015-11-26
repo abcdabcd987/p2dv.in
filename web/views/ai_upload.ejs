@@ -1,25 +1,16 @@
 <% include head %>
 
-<form class="form-horizontal" role="form" action="/ai/upload" method="post" enctype="multipart/form-data">
+<form class="form-horizontal" role="form" action="/ai/upload" method="post">
   <h2>Upload AI</h2>
   <div class="form-group">
-    <label for="file" class="col-sm-2 control-label">ZIP File</label>
+    <label for="file" class="col-sm-2 control-label">Source Code</label>
     <div class="col-sm-10">
-      <input type="file" class="form-control" id="file" placeholder="Choose the zip file" name="ai" required>
+      <textarea class="form-control" id="source-code" name="source_code" required rows="17"></textarea>
     </div>
   </div>
   <div class="form-group">
-    <pre>请将 AI 打包为 zip 文件，zip 文件的根目录即为 AI 的源代码，如：
-MyAI.zip:
-    /Makefile
-    /Makefile-mingw
-    /main.cpp
-    /network.h
-    /player.cpp
-    /player.h
-    
-另外，编译时将不会使用 Makefile，而是直接使用下面命令：
-     g++ -std=c++11 -O2 -Wall -lpthread -lboost_system *.cpp -o client
+    <pre>Compile with:
+    g++ -std=c++11 -O2 -Wall AI.cpp -o AI
     </pre>
   </div>
   <div class="form-group">

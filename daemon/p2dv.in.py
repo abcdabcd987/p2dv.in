@@ -22,7 +22,7 @@ def loadJSON(data):
 class Daemon:
     def _getTask(self):
         try:
-            r = requests.post(const.CORE_SERVER + '/task', data={'token': const.TOKEN})
+            r = requests.post(const.CORE_SERVER + '/task', data={'token': const.TOKEN}, timeout=const.REQUESTS_TIMEOUT)
             return loadJSON(r.content)
         except:
             return {'type': 'empty'}
@@ -30,7 +30,7 @@ class Daemon:
     def _findOne(self, collection, where):
         while True:
             try:
-                r = requests.post(const.CORE_SERVER + '/find_one', data={'token': const.TOKEN, 'collection': collection, 'where': toJSON(where)})
+                r = requests.post(const.CORE_SERVER + '/find_one', data={'token': const.TOKEN, 'collection': collection, 'where': toJSON(where)}, timeout=const.REQUESTS_TIMEOUT)
                 return loadJSON(r.content)
             except:
                 print '_findOne fail.'
@@ -40,7 +40,7 @@ class Daemon:
         while True:
             try:
                 print 'Getting Files ... %s ... %s ... %s' % (ID, dlType, savepath)
-                r = requests.post(const.CORE_SERVER + '/download', data={'token': const.TOKEN, 'id': ID, 'type': dlType})
+                r = requests.post(const.CORE_SERVER + '/download', data={'token': const.TOKEN, 'id': ID, 'type': dlType}, timeout=const.REQUESTS_TIMEOUT)
                 with open(savepath, 'wb') as f:
                     f.write(r.content)
                 return
@@ -51,22 +51,37 @@ class Daemon:
     def _uploadAI(self, ID, status, buildInfo, absPath=None):
         while True:
             try:
-                print 'Uploading AI ... %s ... %s ... %s' % (ID, status, absPath)
+                print '    Uploading AI ... %s ... %s ... %s' % (ID, status, absPath)
                 data = { 'info': buildInfo, 'status': status, 'token': const.TOKEN, 'id': ID }
                 if status == 'Available':
                     files = {'ai': open(absPath, 'rb')}
                 else:
                     files = None
-                r = requests.post(const.CORE_SERVER + '/upload', data=data, files=files)
+                r = requests.post(const.CORE_SERVER + '/upload', data=data, files=files, timeout=const.REQUESTS_TIMEOUT)
                 return r.json()
             except:
-                print '_uploadAI fail. response:'
+                print '_uploadAI fail.'
+                time.sleep(random.random())
+
+    def _uploadText(self, absPath):
+        while True:
+            try:
+                print '    Uploading Text ... %s' % absPath
+                data = { 'token': const.TOKEN }
+                with open(absPath, 'rb') as f:
+                    files = {'text': f}
+                    r = requests.post(const.CORE_SERVER + '/upload_text', data=data, files=files, timeout=const.REQUESTS_TIMEOUT)
+                    res = r.json()["path"]
+                return res
+            except Exception as e:
+                print(str(e))
+                print '_uploadText fail.'
                 time.sleep(random.random())
 
     def _updateDBs(self, data):
         while True:
             try:
-                r = requests.post(const.CORE_SERVER + '/update', data={'data': toJSON(data), 'token': const.TOKEN})
+                r = requests.post(const.CORE_SERVER + '/update', data={'data': toJSON(data), 'token': const.TOKEN}, timeout=const.REQUESTS_TIMEOUT)
                 return r.json()
             except:
                 print '_updateDBs fail.'
@@ -88,7 +103,6 @@ class Daemon:
     ###### Task 1: Unzip & Compile
     def _build(self, ai):
         print '========== Found AI to be build: <', ai['user'], ',', ai['idOfUser'], '>, upload date: ', ai['uploadDate']
-        self._ensureFile(str(ai['_id']), 'zip', ai['absPath'])
         p = Prepare(ai).Run()
 
         ID = str(ai['_id'])
@@ -121,27 +135,30 @@ class Daemon:
         ai0 = self._findOne('ais', { 'user': battle['user0'], 'idOfUser': battle['idOfUser0'] })
         ai1 = self._findOne('ais', { 'user': battle['user1'], 'idOfUser': battle['idOfUser1'] })
         updater = lambda step: self._updateDB('records', {'_id':battle['_id']}, {'$set':{'step':step}})
+        text_uploader = lambda path: self._uploadText(path)
 
         # Ensure executable file
         self._ensureFile(str(ai0['_id']), 'ai', ai0['absPath'])
         self._ensureFile(str(ai1['_id']), 'ai', ai1['absPath'])
 
         # Run battle
-        result, stderr0, stderr1 = Battle(server, ai0, ai1, updater).Run()
+        result = Battle(server, ai0, ai1, updater, text_uploader).Run()
 
         # Prepare documents
         doc_ai0 = {'$set':{'name':result['user'][0]}}
         doc_ai1 = {'$set':{'name':result['user'][1]}}
         doc_rec = {'$set':{
-            'name0'  : result['user'][0],
-            'name1'  : result['user'][1],
             'step'   : result['total'],
             'status' : 'Finished',
             'result' : result['result'],
-            'log'    : json.dumps(result, indent=2),
+            'log'    : result['json'],
             'runDate': datetime.utcnow(),
-            'stderr0': stderr0,
-            'stderr1': stderr1
+            'stdin0' : result['stdin0'],
+            'stdout0': result['stdout0'],
+            'stderr0': result['stderr0'],
+            'stdin1' : result['stdin1'],
+            'stdout1': result['stdout1'],
+            'stderr1': result['stderr1'],
         }}
         doc_user0 = {'$inc': dict()}
         doc_user1 = {'$inc': dict()}
@@ -172,8 +189,8 @@ class Daemon:
             doc_user1['$inc']['win' ] = 1;
             doc_rec['$set']['winnerId'] = ai1['_id']
             doc_rec['$set']['loserId']  = ai0['_id']
-            doc_rec['$set']['winner'] = { 'name': ai1['name'], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
-            doc_rec['$set']['loser']  = { 'name': ai0['name'], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
+            doc_rec['$set']['winner'] = { 'name': result['user'][1], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
+            doc_rec['$set']['loser']  = { 'name': result['user'][0], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
         elif result['result'] == 0:
             # if ai0 won:
             doc_ai0['$inc'] = {'win' :1}
@@ -190,8 +207,8 @@ class Daemon:
             doc_user1['$inc']['lose'] = 1;
             doc_rec['$set']['winnerId'] = ai0['_id']
             doc_rec['$set']['loserId']  = ai1['_id']
-            doc_rec['$set']['winner'] = { 'name': ai0['name'], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
-            doc_rec['$set']['loser']  = { 'name': ai1['name'], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
+            doc_rec['$set']['winner'] = { 'name': result['user'][0], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
+            doc_rec['$set']['loser']  = { 'name': result['user'][1], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
         else:
             print "!!!!!!!! UNKNOWN RESULT !!!!!!!!"
 

@@ -133,6 +133,13 @@
 
 <h2>Build Infomation</h2>
 <pre><%= ai.buildInfo %></pre>
+
+
+<% if (ai.user === user.name || settings.adminUsernames.indexOf(user.name) > -1) { %>
+  <h2>Source Code</h2>
+  <pre><%= ai.sourceCode %></pre>
+<% } %>
+
 <% include foot_script %>
 <script src="<%= settings.staticCDN %>/js/d3.min.js"></script>
 <script src="<%= settings.staticCDN %>/js/c3.min.js"></script>

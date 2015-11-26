@@ -11,10 +11,12 @@ module.exports = {
     websiteName: 'p2dv.in',
     defaultPort: 3000,
     secret: cookieSecret,
-    staticCDN: 'http://p2dv-in.qiniudn.com',
+    staticCDN: '',
+    //staticCDN: 'http://p2dv-in.qiniudn.com',
     frontSalt: 'Your Salt for Frontend Encryption, Random String',
     databaseInfo: dbi,
     uploadPath: '/Users/abcdabcd987/Developer/tmp/p2dv.in/upload/',
+    textFilePath: '/Users/abcdabcd987/Developer/tmp/p2dv.in/log/',
     battlePerPage: 20,
     AIPerPage: 20,
     sessionDb: {

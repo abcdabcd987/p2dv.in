@@ -7,6 +7,7 @@ import time
 import json
 import random
 import os
+import string
 from bson import json_util
 from bson.objectid import ObjectId
 
@@ -21,6 +22,9 @@ def toJSON(data):
 
 def loadJSON(data):
     return json.loads(data, object_hook=json_util.object_hook)
+
+def randomString(size=16, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 class TaskHandler(tornado.web.RequestHandler):
     def post(self):
@@ -146,6 +150,24 @@ class UploadHandler(tornado.web.RequestHandler):
 
         self.send_error()
 
+class UploadTextHandler(tornado.web.RequestHandler):
+    def post(self):
+        token = self.get_body_argument('token', default='')
+        if token != const.TOKEN:
+            self.send_error()
+            return
+
+        name = randomString()
+        upload = self.request.files['text'][0]
+        dirpath = os.path.join(const.TEXT_SAVE_DIRECTORY, name[:2])
+        relpath = os.path.join(name[:2], name[2:])
+        abspath = os.path.join(const.TEXT_SAVE_DIRECTORY, relpath)
+        if not os.path.exists(dirpath):
+            os.makedirs(dirpath)
+        with open(abspath, 'wb') as output:
+            output.write(upload['body'])
+
+        self.write({'path': relpath})
 
 
 class UpdateHandler(tornado.web.RequestHandler):
@@ -168,6 +190,7 @@ application = tornado.web.Application([
     (r'/find_one', FindOneHandler),
     (r'/download', DownloadHandler),
     (r'/upload', UploadHandler),
+    (r'/upload_text', UploadTextHandler),
     (r'/update', UpdateHandler)
 ], debug=True)
 
