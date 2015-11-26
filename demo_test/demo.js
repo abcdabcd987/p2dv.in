@@ -117,7 +117,6 @@ Demo = {
 	getData: function getData() {
 		$.getJSON(Demo.jsonURL, function(dt) {
 			Demo.data = dt;
-			console.log(dt.step.length);
 			Demo.prepare();
 			Demo.setupInvalidList();
 			Demo.btnPlay.prop('disabled', false);
@@ -160,12 +159,14 @@ Demo = {
 	        Demo.demoText.attr('class', 'bg-warning');
 	    }
 
-	    if (step.valid) {
-	        Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> Move (' + step.source[0] + ',' + step.source[1] + ') to (' + step.target[0] + ',' + step.target[1] + ')');
+	    if (Demo.playing === -1) {
+	    	Demo.demoText.html('<strong>initial chessboard');
+	    }
+
+	    if (step.posx == step.tox && step.posy == step.toy) {
+	    	Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Reverse (' + step.posx + ',' + step.posy + ')');
 	    } else {
-	        Demo.demoText.attr('class', 'bg-danger');
-	        var info = step.message || 'Invalid Operation! (No Details)';
-	        Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> ' + info);
+	    	Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Move (' + step.posx + ',' + step.posy + ') to (' + step.tox + ',' + step.toy + ')');
 	    }
 	},
 
@@ -207,7 +208,6 @@ Demo = {
 			}
 		}
 		oldBoard = [];
-		oldBoard.push(Demo.cloneObject(curBoard));
 		for (var i = 0; i < Demo.data.step.length; ++i) {
 			var x = Demo.data.step[i].posx;
 			var y = Demo.data.step[i].posy;
@@ -224,14 +224,10 @@ Demo = {
 	},
 
 	moveChess: function moveChess(sx, sy, tx, ty) {
-		console.log('moveChess called');
-		console.log([sx, sy, tx, ty]);
 		var source = Demo.getBox(sx, sy);
 		var target = Demo.getBox(tx, ty);
 		if (sx == tx && sy == ty) {
-			console.log("Operation flip");
-			console.log(Demo.getImg(oldBoard[Demo.playing + 1][tx][ty]));
-			target.attr('class', Demo.getImg(oldBoard[Demo.playing + 1][tx][ty]));
+			target.attr('class', Demo.getImg(oldBoard[Demo.playing][tx][ty]));
 			Demo.setControls();
 			if (!Demo.isPause) {
 				++Demo.playing;
@@ -256,9 +252,6 @@ Demo = {
 	},
 
 	draw: function draw() {
-		console.log('Draw called.');
-		console.log(Demo.playing);
-
 		var i = Demo.playing;
 		var step = Demo.data.step[i];
 
@@ -271,6 +264,23 @@ Demo = {
 		Demo.updateText();
 
 		Demo.moveChess(step.posx, step.posy, step.tox, step.toy);
+	},
+
+	drawNext: function drawNext() {
+
+		++Demo.playing;
+		var i = Demo.playing;
+		var step = Demo.data.step[i];
+
+		if (i === Demo.data.step.length) {
+			Demo.isPause = true;
+			Demo.spanPlay.attr('class', 'glyphicon glyphicon-play');
+			return;
+		}
+
+		Demo.moveChess(step.posx, step.posy, step.tox, step.toy);
+		Demo.updateText();
+
 	},
 
 	playDemo: function playDemo() {
@@ -330,13 +340,11 @@ Demo = {
 
 	nextClick: function nextClick(e) {
 		e.preventDefault();
-		console.log('Next Clicked');
-		if (Demo.playing < Demo.data.step.length - 1) {
+		if (Demo.playing < Demo.data.step.length) {
 			Demo.btnNext.prop('disabled', true);
 			Demo.btnPlay.prop('disabled', true);
 			Demo.btnPrev.prop('disabled', true);
-			++Demo.playing;
-			Demo.draw();
+			Demo.drawNext();
 		}
 		$(this).blur();
 		return false;
