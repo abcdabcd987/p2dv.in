@@ -21,7 +21,7 @@ class Updater:
             self.db.userratings.insert({'id': user['_id'], 'rating': 1500, 'date': user['registerDate']})
 
         self.db.updater.insert({'id': ObjectId('000000000000000000000000'), 'type': 'lastid'})
-        self.db.updater.insert({'value': 1416568800, 'type': 'timestamp'})
+        self.db.updater.insert({'value': 1448553600, 'type': 'timestamp'})
 
     def _updateRating(self, timestamp):
         lastid = self.lastid
@@ -117,7 +117,7 @@ class Updater:
         self.records = []
         timebound = time.mktime(datetime.utcnow().timetuple())
         self.lastrow = 0
-        for rec in self.db.records.find({'_id': {'$gt': self.lastid}}, fields={'log':False,'stderr0':False,'stderr1':False}).sort('_id', 1):
+        for rec in self.db.records.find({'_id': {'$gt': self.lastid}}, projection={'sourceCode': False}).sort('_id', 1):
             self.records.append(rec)
 
         timestamp = self.db.updater.find_one({'type': 'timestamp'})['value']
