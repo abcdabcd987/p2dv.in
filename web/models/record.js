@@ -24,8 +24,13 @@ var schema = new Schema({
         idOfUser: { type: Number },
     },
 	log: { type: String },
+    stdin0: { type: String },
+    stdout0: { type: String },
     stderr0: { type: String },
+    stdin1: { type: String },
+    stdout1: { type: String },
     stderr1: { type: String },
+    judger: { type: String, default: '' },
     submitDate: { type: Date, default: Date.now },
     runDate : { type: Date, default: Date.now },
 });

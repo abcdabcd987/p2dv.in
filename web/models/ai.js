@@ -11,7 +11,8 @@ var schema = new Schema({
     ratio:{ type: Number, default: 0 },
     status: { type: String, default: "Pending" },
     buildInfo: { type: String, default: '' },
-    absPath: { type: String },
+    sourceCode: { type: String, default: '' },
+    absPath: { type: String, default: '' },
     rating: { type: Number, default: 1500 },
 });
 

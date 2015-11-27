@@ -1,19 +1,43 @@
+var fs = require('fs');
+var path = require('path');
 var settings = require('../settings');
 var utility = require('./utility');
 var AI = require('../models/ai');
 var Record = require('../models/record');
 var ObjectId = require('mongoose').Types.ObjectId;
 
-exports.getJSON = function(req, res) {
-    var id = req.param('id');
-    Record.findOne({'_id': ObjectId(id)}).select('log').exec(function(err, doc) {
+function get_text(id, text, res) {
+    if (['log', 'stdin0', 'stdout0', 'stderr0', 'stdin1', 'stdout1', 'stderr1'].indexOf(text) === -1) {
+        res.send('404 Not Found!');
+        return;
+    }
+    var content_type = text === 'log' ? 'application/json' : 'text/plain';
+    Record.findOne({'_id': ObjectId(id)}).select(text).exec(function(err, doc) {
         if (!doc) {
             res.send('404 Not Found!');
             return;
         }
-        res.set('Content-Type', 'application/json');
-        res.send(doc.log);
+        res.set('Content-Type', content_type);
+        var abspath = path.join(settings.textFilePath, doc[text]);
+        fs.readFile(abspath, function(err, data) {
+            if (err) {
+                res.send(err)
+                return
+            }
+            res.send(data);
+        });
     });
+}
+
+exports.getJSON = function(req, res) {
+    var id = req.param('id');
+    get_text(id, 'log', res);
+};
+
+exports.getText = function(req, res) {
+    var id = req.param('id');
+    var text = req.param('text');
+    get_text(id, text, res);
 };
 
 exports.getSteps = function(req, res) {
