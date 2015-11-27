@@ -148,6 +148,8 @@ class Daemon:
         doc_ai0 = {'$set':{'name':result['user'][0]}}
         doc_ai1 = {'$set':{'name':result['user'][1]}}
         doc_rec = {'$set':{
+            'name0'  : result['user'][0],
+            'name1'  : result['user'][1],
             'step'   : result['total'],
             'status' : 'Finished',
             'result' : result['result'],
