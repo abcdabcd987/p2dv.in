@@ -30,6 +30,7 @@ var schema = new Schema({
     stdin1: { type: String },
     stdout1: { type: String },
     stderr1: { type: String },
+    judger: { type: String, default: '' },
     submitDate: { type: Date, default: Date.now },
     runDate : { type: Date, default: Date.now },
 });

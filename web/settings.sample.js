@@ -9,7 +9,7 @@ var dbi = {
 var cookieSecret = "Your Cookie Secret, Random String";
 module.exports = {
     websiteName: 'p2dv.in',
-    adminUsernames: [''],
+    adminUsernames: [],
     defaultPort: 3000,
     secret: cookieSecret,
     staticCDN: '',

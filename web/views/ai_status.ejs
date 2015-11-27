@@ -131,8 +131,10 @@
 </tbody>
 </table>
 
+<% if (ai.buildInfo) { %>
 <h2>Build Infomation</h2>
 <pre><%= ai.buildInfo %></pre>
+<% } %>
 
 
 <% if (ai.user === user.name || settings.adminUsernames.indexOf(user.name) > -1) { %>

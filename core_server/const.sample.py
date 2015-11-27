@@ -1,3 +1,3 @@
-AI_SAVE_DIRECTORY   = '/Users/abcdabcd987/Developer/tmp/p2dv.in/ai/'
-TEXT_SAVE_DIRECTORY   = '/Users/abcdabcd987/Developer/tmp/p2dv.in/log/'
+AI_SAVE_DIRECTORY   = '/home/p2dv/data/ai/'
+TEXT_SAVE_DIRECTORY = '/home/p2dv/data/log/'
 TOKEN               = 'I am a token.'

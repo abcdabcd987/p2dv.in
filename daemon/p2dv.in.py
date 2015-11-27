@@ -161,6 +161,7 @@ class Daemon:
             'stdin1' : result['stdin1'],
             'stdout1': result['stdout1'],
             'stderr1': result['stderr1'],
+            'judger' : const.SERVER_NAME
         }}
         doc_user0 = {'$inc': dict()}
         doc_user1 = {'$inc': dict()}
