@@ -103,13 +103,13 @@ server {
 
 ## Credits of *p2dv.in*
 
-- AI Judge by `@juda`
+- AI Judge by `@juda`: [@juda/animal](https://github.com/juda/animal)
 - The whole system by `@abcdabcd987`
 
 ## Credits of *sjtu.cool*
 
 - Battle Demo by `@BreakVoid`
-- Sample AI by `@greatwall1995`
-- AI Judge by `@bywbilly`
-- IPC library by `@abcdabcd987`
+- Sample AI by `@greatwall1995`: [gist:chess_sample_ai.cc](https://gist.github.com/abcdabcd987/d6d284227f5c5953c857)
+- AI Judge by `@bywbilly`: [@abcdabcd987/ACM-2015-AI-Server](https://github.com/abcdabcd987/ACM-2015-AI-Server)
+- IPC library by `@abcdabcd987`: [@abcdabcd987/py-stdio-ipc](https://github.com/abcdabcd987/py-stdio-ipc)
 - Adaption from *p2dv.in* by `@abcdabcd987`

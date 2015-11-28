@@ -14,6 +14,7 @@ module.exports = {
     secret: cookieSecret,
     staticCDN: '',
     //staticCDN: 'http://p2dv-in.qiniudn.com',
+    analyticsTrackingID: '',
     frontSalt: 'Your Salt for Frontend Encryption, Random String',
     databaseInfo: dbi,
     uploadPath: '/Users/abcdabcd987/Developer/tmp/p2dv.in/upload/',
