@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import subprocess32
 import tempfile
 import shutil
@@ -13,8 +14,8 @@ class Prepare:
         # Prepare
         self.tmpdir = tempfile.mkdtemp()
         source = path.join(self.tmpdir, 'ai.cc')
-        with open(source, 'w') as f:
-            f.write(self.ai['sourceCode'])
+        with open(source, 'wb') as f:
+            f.write(self.ai['sourceCode'].encode('utf-8'))
 
         # Compile
         target = path.join(self.tmpdir, 'client')

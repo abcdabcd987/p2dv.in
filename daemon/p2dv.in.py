@@ -1,4 +1,5 @@
 #!/usr/bin/python2.7
+# -*- coding: utf-8 -*-
 import os
 import time
 import json
@@ -83,7 +84,8 @@ class Daemon:
             try:
                 r = requests.post(const.CORE_SERVER + '/update', data={'data': toJSON(data), 'token': const.TOKEN}, timeout=const.REQUESTS_TIMEOUT)
                 return r.json()
-            except:
+            except Exception as e:
+                print(str(e))
                 print '_updateDBs fail.'
                 time.sleep(random.random())
 

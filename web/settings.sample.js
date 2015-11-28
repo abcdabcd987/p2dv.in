@@ -17,8 +17,8 @@ module.exports = {
     analyticsTrackingID: '',
     frontSalt: 'Your Salt for Frontend Encryption, Random String',
     databaseInfo: dbi,
-    uploadPath: '/Users/abcdabcd987/Developer/tmp/p2dv.in/upload/',
-    textFilePath: '/Users/abcdabcd987/Developer/tmp/p2dv.in/log/',
+    uploadPath: '/home/p2dv/data/upload/',
+    textFilePath: '/home/p2dv/data/log/',
     battlePerPage: 20,
     AIPerPage: 20,
     sessionDb: {
