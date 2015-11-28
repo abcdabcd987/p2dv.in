@@ -104,7 +104,7 @@ class Daemon:
 
     ###### Task 1: Unzip & Compile
     def _build(self, ai):
-        print '========== Found AI to be build: <', ai['user'], ',', ai['idOfUser'], '>, upload date: ', ai['uploadDate']
+        print '========== Found AI to be build: <', ai['user'].encode('utf-8'), ',', ai['idOfUser'], '>, upload date: ', ai['uploadDate']
         p = Prepare(ai).Run()
 
         ID = str(ai['_id'])
@@ -126,7 +126,7 @@ class Daemon:
                 os.chmod(absPath, 0755)
 
     def _battle(self, battle):
-        print '========== Found a battle: <', battle['user0'], ',', battle['idOfUser0'], '> vs <', battle['user1'], ', ', battle['idOfUser1'], '>'
+        print '========== Found a battle: <', battle['user0'].encode('utf-8'), ',', battle['idOfUser0'], '> vs <', battle['user1'].encode('utf-8'), ', ', battle['idOfUser1'], '>'
 
         # Mark Running
         doc_rec = {'$set':{'status': 'Running'}}

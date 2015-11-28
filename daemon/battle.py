@@ -49,7 +49,6 @@ class Battle:
             judge.stdin.write('get steps\n')
             judge.stdin.flush()
             steps = judge.stderr.readline().strip()
-            print(steps)
             if steps == 'finished':
                 break
             self.updater(steps)
