@@ -131,20 +131,23 @@
 </tbody>
 </table>
 
-<% if (ai.buildInfo) { %>
-<h2>Build Infomation</h2>
-<pre><%= ai.buildInfo %></pre>
-<% } %>
-
-
 <% if (ai.user === user.name || settings.adminUsernames.indexOf(user.name) > -1) { %>
+  <% if (ai.buildInfo) { %>
+    <h2>Build Infomation</h2>
+    <pre><%= ai.buildInfo %></pre>
+  <% } %>
+
   <h2>Source Code</h2>
-  <pre><%= ai.sourceCode %></pre>
+  <pre class="source-code prettyprint lang-cpp"><%= ai.sourceCode %></pre>
 <% } %>
 
 <% include foot_script %>
 <script src="<%= settings.staticCDN %>/js/d3.min.js"></script>
 <script src="<%= settings.staticCDN %>/js/c3.min.js"></script>
 <script src="<%= settings.staticCDN %>/js/rating.js?20141217"></script>
-<script>ratingChart.setup("<%= ai._id %>/rating.json")</script>
+<script src="<%= settings.staticCDN %>/google-code-prettify/prettify.js"></script>
+<script>
+ratingChart.setup("<%= ai._id %>/rating.json");
+prettyPrint();
+</script>
 <% include foot_close %>

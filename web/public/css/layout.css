@@ -53,6 +53,10 @@ textarea, input[type="text"], input[type="password"] {
   border-top: 1px solid #e5e5e5;
 }
 
+.source-code {
+  font-size: 13px;
+  line-height: 15px;
+}
 
 /* ==================== Chess Board ==================== */
 
