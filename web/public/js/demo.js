@@ -86,7 +86,11 @@ Demo = {
 	},
 
 	setupInvalidList: function setupInvalidList() {
-		// var ul = $('#invalid-list');
+		var ul = $('#invalid-list');
+		if (Demo.data.err[0])
+			ul.append('<li class="list-group-item"><strong>AI0 Err:</strong> ' + Demo.data.err[0] + '</li>');
+		if (Demo.data.err[1])
+			ul.append('<li class="list-group-item"><strong>AI1 Err:</strong> ' + Demo.data.err[1] + '</li>');
 		// for (var i = 0; i < Demo.data.step.length; ++i) {
 		//     var step = Demo.data.step[i];
 		//     if (!step.valid) {
@@ -146,9 +150,9 @@ Demo = {
 		}
 
 		if (step.posx == step.tox && step.posy == step.toy) {
-			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Reverse (' + step.posx + ',' + step.posy + ')');
+			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Flipped (' + step.posx + ',' + step.posy + ')');
 		} else {
-			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Move (' + step.posx + ',' + step.posy + ') to (' + step.tox + ',' + step.toy + ')');
+			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Moved (' + step.posx + ',' + step.posy + ') to (' + step.tox + ',' + step.toy + ')');
 		}
 	},
 
@@ -208,8 +212,8 @@ Demo = {
 			if (id == 0) jdom.attr('class', 'label label-danger').html('红');
 			else jdom.attr('class', 'label label-success').html('黑');
 		}
-		set_ai_color_span(Demo.data.id[0], $('#span-ai1-color'));
-		set_ai_color_span(Demo.data.id[1], $('#span-ai2-color'));
+		set_ai_color_span(Demo.data.id[0], $('#span-ai0-color'));
+		set_ai_color_span(Demo.data.id[1], $('#span-ai1-color'));
 	},
 
 	moveChess: function moveChess(sx, sy, tx, ty) {
