@@ -91,13 +91,13 @@ Demo = {
 			ul.append('<li class="list-group-item"><strong>AI0 Err:</strong> ' + Demo.data.err[0] + '</li>');
 		if (Demo.data.err[1])
 			ul.append('<li class="list-group-item"><strong>AI1 Err:</strong> ' + Demo.data.err[1] + '</li>');
-		// for (var i = 0; i < Demo.data.step.length; ++i) {
-		//     var step = Demo.data.step[i];
-		//     if (!step.valid) {
-		//         var info = step.message || 'Invalid Operation! (No Details)';
-		//         ul.append('<li class="list-group-item"><strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> ' + info + '</li>');
-		//     }
-		// }
+		for (var i = 0; i < Demo.data.step.length; ++i) {
+		    var step = Demo.data.step[i];
+		    if ('err' in step) {
+		        var info = step.err || 'Invalid Operation! (No Details)';
+		        ul.append('<li class="list-group-item"><strong>[Step ' + (i+1) + ']AI' + (i%2) + '</strong> ' + info + '</li>');
+		    }
+		}
 	},
 
 	getData: function getData() {
