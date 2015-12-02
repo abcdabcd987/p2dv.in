@@ -140,7 +140,7 @@ Demo = {
 		var step = Demo.data.step[i];
 
 		if (i%2 === 0) {
-			Demo.demoText.attr('class', 'bg-danger');
+			Demo.demoText.attr('class', 'bg-red');
 		} else {
 			Demo.demoText.attr('class', 'bg-black');
 		}
