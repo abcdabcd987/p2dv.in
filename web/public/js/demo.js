@@ -47,7 +47,7 @@ Demo = {
 	putChess: function putChess() {
 		for (var i = 0; i < 4; ++i) {
 			for (var j = 0; j < 8; ++j) {
-				Demo.getBox(i, j).attr('class', 'img-blank');
+				Demo.getBox(i, j).attr('class', 'img-chess img-blank');
 			}
 		}
 	},
@@ -57,7 +57,7 @@ Demo = {
 			return '';
 		}
 		if (chess[1] === true && Demo.hideChess === true) {
-			return 'img-blank';
+			return 'img-chess img-blank';
 		} else {
 			if (chess[0] === -7) {return 'img-chess img-black-7';}
 			if (chess[0] === -6) {return 'img-chess img-black-6';}
