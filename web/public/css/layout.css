@@ -58,6 +58,10 @@ textarea, input[type="text"], input[type="password"] {
   line-height: 15px;
 }
 
+.bg-black {
+  background-color: #303030;
+}
+
 /* ==================== Chess Board ==================== */
 
 #chess-board {

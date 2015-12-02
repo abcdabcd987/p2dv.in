@@ -139,17 +139,20 @@ Demo = {
 		var i = Demo.playing;
 		var step = Demo.data.step[i];
 
-		if (step.player === 0) {
-			Demo.demoText.attr('class', 'bg-success');
+		if (i%2 === 0) {
+			Demo.demoText.attr('class', 'bg-danger');
 		} else {
-			Demo.demoText.attr('class', 'bg-warning');
+			Demo.demoText.attr('class', 'bg-black');
 		}
 
 		if (Demo.playing === -1) {
 			Demo.demoText.html('<strong>initial chessboard</strong>');
 		}
 
-		if (step.posx == step.tox && step.posy == step.toy) {
+		if ('err' in step) {
+			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Error: ' + step.err);
+			Demo.demoText.attr('class', 'bg-warning');
+		} else if (step.posx == step.tox && step.posy == step.toy) {
 			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Flipped (' + step.posx + ',' + step.posy + ')');
 		} else {
 			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Moved (' + step.posx + ',' + step.posy + ') to (' + step.tox + ',' + step.toy + ')');
@@ -212,7 +215,7 @@ Demo = {
 
 		function set_ai_color_span(id, jdom) {
 			if (id == 0) jdom.attr('class', 'label label-danger').html('红');
-			else jdom.attr('class', 'label label-success').html('黑');
+			else jdom.attr('class', 'label bg-black').html('黑');
 		}
 		set_ai_color_span(Demo.data.id[0], $('#span-ai0-color'));
 		set_ai_color_span(Demo.data.id[1], $('#span-ai1-color'));
