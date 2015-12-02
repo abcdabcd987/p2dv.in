@@ -7,7 +7,7 @@ function refresh_step(url) {
         if (data.status === 'Running') {
             if (span_status.html() === 'Pending') {
                 span_status.attr('class', 'label label-warning');
-                dd_steps.html('<img src="/images/jumping-ball.gif"> <span id="span-steps">loading</span>');
+                dd_steps.html('<img src="/images/ball.svg"> <span id="span-steps">loading</span>');
                 span_steps = $("#span-steps");
                 span_status.html(data.status);
             }

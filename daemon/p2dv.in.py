@@ -129,7 +129,7 @@ class Daemon:
         print '========== Found a battle: <', battle['user0'].encode('utf-8'), ',', battle['idOfUser0'], '> vs <', battle['user1'].encode('utf-8'), ', ', battle['idOfUser1'], '>'
 
         # Mark Running
-        doc_rec = {'$set':{'status': 'Running'}}
+        doc_rec = {'$set':{'status': 'Running', 'judger': const.SERVER_NAME}}
         self._updateDB('records', {'_id':battle['_id']}, doc_rec)
 
         # Run battle
@@ -163,7 +163,6 @@ class Daemon:
             'stdin1' : result['stdin1'],
             'stdout1': result['stdout1'],
             'stderr1': result['stderr1'],
-            'judger' : const.SERVER_NAME
         }}
         doc_user0 = {'$inc': dict()}
         doc_user1 = {'$inc': dict()}
