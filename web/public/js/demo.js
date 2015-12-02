@@ -195,15 +195,17 @@ Demo = {
 		}
 		oldBoard = [];
 		for (var i = 0; i < Demo.data.step.length; ++i) {
-			var x = Demo.data.step[i].posx;
-			var y = Demo.data.step[i].posy;
-			var xx = Demo.data.step[i].tox;
-			var yy = Demo.data.step[i].toy;
-			if (x == xx && y == yy) {
-				curBoard[x][y][1] = false;
-			} else {
-				curBoard[xx][yy] = Demo.cloneObject(curBoard[x][y]);
-				curBoard[x][y] = [0, false];
+			if (!('err' in Demo.data.step[i])) {
+				var x = Demo.data.step[i].posx;
+				var y = Demo.data.step[i].posy;
+				var xx = Demo.data.step[i].tox;
+				var yy = Demo.data.step[i].toy;
+				if (x == xx && y == yy) {
+					curBoard[x][y][1] = false;
+				} else {
+					curBoard[xx][yy] = Demo.cloneObject(curBoard[x][y]);
+					curBoard[x][y] = [0, false];
+				}
 			}
 			oldBoard.push(Demo.cloneObject(curBoard));
 		}
