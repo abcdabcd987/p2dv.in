@@ -52,6 +52,7 @@ class Battle:
             if steps == 'finished':
                 break
             self.updater(steps)
+            time.sleep(0.05)
 
         # Kill all
         if judge.poll() == None:
