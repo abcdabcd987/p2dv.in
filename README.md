@@ -13,8 +13,9 @@ sudo locale-gen zh_CN.UTF-8
 sudo dpkg-reconfigure tzdata
 
 curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
-sudo apt-get install build-essential git python-pip python-dev nodejs screen mongo-server vim nginx
+sudo apt-get install build-essential git python-pip python3-pip python-dev nodejs screen mongo-server vim nginx
 sudo pip install tornado pymongo subprocess32
+sudo pip3 install tabulate requests
 sudo useradd -m -s /bin/bash p2dv
 sudo passwd p2dv
 sudo vim /etc/nginx/sites-enabled/default
@@ -69,10 +70,20 @@ mkdir data
 mkdir data/ai
 mkdir log
 
-# start daemon
+# either start daemon using screen
 screen -S daemon
 cd sjtu.cool/daemon/
 ./p2dv.in.py | tee ~/log/daemon-$(date +%Y-%m-%d_%H_%M_%S).log
+
+# or run at startup
+vim /etc/rc.local
+```
+
+### `rc.local` Example
+
+```
+su p2dv -c '/home/p2dv/sjtu.cool/daemon/rename_as_ip.sh'
+su p2dv -c 'cd /home/p2dv/sjtu.cool/daemon/; nohup ./p2dv.in.py > ~/log/daemon-$(date +%Y-%m-%d_%H_%M_%S).log 2>&1 &'
 ```
 
 ## Nginx Configuration Example
