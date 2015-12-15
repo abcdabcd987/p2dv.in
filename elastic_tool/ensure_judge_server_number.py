@@ -26,11 +26,13 @@ def deploy_servers(count):
             if k in current_servers:
                 ip = current_servers[k]['main_ip']
                 status = current_servers[k]['status']
+                if status == 'active':
+                    status = current_servers[k]['server_state']
             else:
                 ip = 'unknown'
                 status = 'unknown'
             table.append([k, ip, status])
-            if status != 'active':
+            if status != 'ok':
                 finish = False
         print(tabulate(table, headers='firstrow'))
         print('')
