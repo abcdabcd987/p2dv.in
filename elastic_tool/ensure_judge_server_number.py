@@ -42,11 +42,11 @@ def deploy_servers(count):
 
 def send_quit(ip):
     cmd = 'kill -s QUIT $(/home/p2dv/sjtu.cool/daemon/poll_status.sh)'
-    subprocess.call(['ssh', 'p2dv@%s'%ip, cmd])
+    subprocess.call(['ssh', '-o', 'StrictHostKeyChecking no', 'p2dv@%s'%ip, cmd])
 
 def poll_daemon(ip):
     cmd = '/home/p2dv/sjtu.cool/daemon/poll_status.sh'
-    res = subprocess.check_output(['ssh', 'p2dv@%s'%ip, cmd])
+    res = subprocess.check_output(['ssh', '-o', 'StrictHostKeyChecking no', 'p2dv@%s'%ip, cmd])
     return str(res, 'utf-8').strip()
 
 def destroy_servers(count):
