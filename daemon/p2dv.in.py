@@ -3,6 +3,7 @@
 import os
 import time
 import json
+import signal
 import random
 import requests
 import tempfile
@@ -93,14 +94,22 @@ class Daemon:
         return self._updateDBs({collection: [{'where': where, 'value': value}]})
 
     def Run(self):
-        while True:
+        if os.path.isfile('/tmp/core_server.lock'):
+            print 'Lock exist'
+            return
+        with open('/tmp/core_server.lock', 'w') as f:
+            f.write(str(os.getpid()))
+
+        while not sig_quit:
             task = self._getTask()
             if task['type'] == 'ai':
                 self._build(task['doc'])
             elif task['type'] == 'battle':
                 self._battle(task['doc'])
             else:
-                time.sleep(1)
+                time.sleep(0.1)
+
+        os.remove('/tmp/core_server.lock')
 
     ###### Task 1: Unzip & Compile
     def _build(self, ai):
@@ -227,6 +236,13 @@ class Daemon:
         self._updateDBs(docs)
 
         print "      Done!"
+
+
+sig_quit = False
+def onSIGQUIT(signum, frame):
+    global sig_quit
+    sig_quit = True
+signal.signal(signal.SIGQUIT, onSIGQUIT)
 
 daemon = Daemon()
 daemon.Run()
