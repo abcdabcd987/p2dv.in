@@ -1,8 +1,8 @@
 #!/bin/sh
 
-if [ -f /tmp/core_server.lock ];
+if [ -f /tmp/daemon.lock ];
 then
-   echo "UP"
+   cat /tmp/daemon.lock
 else
    echo "DOWN"
 fi
