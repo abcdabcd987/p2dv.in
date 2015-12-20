@@ -48,6 +48,11 @@ screen -S rating
 cd sjtu.cool/core_server/
 ./rating_updater.py init
 while true; do ./rating_updater.py; sleep 120; done
+
+# create mongodb index
+mongo p2dvin
+> db.ais.createIndex({status:1});
+> db.records.createIndex({status:1});
 ```
 
 ## Judge Server Setup Example

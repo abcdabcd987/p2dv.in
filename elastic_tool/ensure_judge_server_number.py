@@ -18,26 +18,7 @@ def deploy_servers(count):
     for i in range(count):
         new_server = vultr.server_create()
         new_servers.add(new_server['SUBID'])
-    while True:
-        finish = True
-        table = [['SUBID', 'IP', 'STATUS']]
-        current_servers = get_current_servers()
-        for k in new_servers:
-            if k in current_servers:
-                ip = current_servers[k]['main_ip']
-                status = current_servers[k]['status']
-                if status == 'active':
-                    status = current_servers[k]['server_state']
-            else:
-                ip = 'unknown'
-                status = 'unknown'
-            table.append([k, ip, status])
-            if status != 'ok':
-                finish = False
-        print(tabulate(table, headers='firstrow'))
-        print('')
-        if finish:
-            break
+        print('%d deploy request sent' % (i+1))
         time.sleep(1)
 
 def send_quit(ip):
