@@ -18,10 +18,9 @@ def send_git_pull(ip):
     subprocess.call(['ssh', '-o', 'StrictHostKeyChecking no', 'p2dv@%s'%ip, cmd])
 
 def update_judge():
-    old = get_current_servers()
-    target = set(list(old.keys())[:count])
-    for k in target:
-        ip = old[k]['main_ip']
+    servers = get_current_servers()
+    for k, v in target.items():
+        ip = v['main_ip']
         print('sending git pull to %s...' % ip)
         send_git_pull(ip)
 
