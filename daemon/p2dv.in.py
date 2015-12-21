@@ -10,6 +10,7 @@ import tempfile
 from os import path
 from bson import json_util
 from datetime import datetime
+from bson.objectid import ObjectId
 
 import const
 from battle import Battle
@@ -107,7 +108,7 @@ class Daemon:
             elif task['type'] == 'battle':
                 self._battle(task['doc'])
             else:
-                time.sleep(0.1)
+                time.sleep(1)
 
         os.remove('/tmp/daemon.lock')
 
@@ -175,6 +176,8 @@ class Daemon:
         }}
         doc_user0 = {'$inc': dict()}
         doc_user1 = {'$inc': dict()}
+        doc_contest_ai0 = { '$inc': dict() }
+        doc_contest_ai1 = { '$inc': dict() }
         if result['result'] == 2:
             # if draw
             doc_ai0['$inc'] = {'draw':1}
@@ -185,7 +188,9 @@ class Daemon:
                 doc_ai1['$set']['ratio'] = (ai1['win'])/float(ai1['win']+ai1['draw']+ai1['lose']+1)
                 doc_ai1['$inc'] = {'draw':1}
             else:
-                doc_user1 = None;
+                doc_user1 = None
+            doc_contest_ai0['$inc']['ais.$.draw'] = 1
+            doc_contest_ai1['$inc']['ais.$.draw'] = 1
         elif result['result'] == 1:
             # if ai1 won:
             doc_ai0['$inc'] = {'lose':1}
@@ -204,6 +209,8 @@ class Daemon:
             doc_rec['$set']['loserId']  = ai0['_id']
             doc_rec['$set']['winner'] = { 'name': result['user'][1], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
             doc_rec['$set']['loser']  = { 'name': result['user'][0], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
+            doc_contest_ai0['$inc']['ais.$.lose'] = 1
+            doc_contest_ai1['$inc']['ais.$.win'] = 1
         elif result['result'] == 0:
             # if ai0 won:
             doc_ai0['$inc'] = {'win' :1}
@@ -222,6 +229,8 @@ class Daemon:
             doc_rec['$set']['loserId']  = ai1['_id']
             doc_rec['$set']['winner'] = { 'name': result['user'][0], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
             doc_rec['$set']['loser']  = { 'name': result['user'][1], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
+            doc_contest_ai0['$inc']['ais.$.win'] = 1
+            doc_contest_ai1['$inc']['ais.$.lose'] = 1
         else:
             print "!!!!!!!! UNKNOWN RESULT !!!!!!!!"
 
@@ -233,6 +242,10 @@ class Daemon:
         if doc_user1:
             docs['users'].append({'where': {'name':ai1['user']}, 'value': doc_user1})
         docs['records'].append({'where': {'_id':battle['_id']}, 'value': doc_rec})
+        if 'contestId' in battle and battle['contestId'] != ObjectId('000000000000000000000000'):
+            docs['contests'] = []
+            docs['contests'].append({'where': {'_id':battle['contestId'], "ais.ai_id":ai0['_id']}, 'value': doc_contest_ai0})
+            docs['contests'].append({'where': {'_id':battle['contestId'], "ais.ai_id":ai1['_id']}, 'value': doc_contest_ai1})
         self._updateDBs(docs)
 
         print "      Done!"
