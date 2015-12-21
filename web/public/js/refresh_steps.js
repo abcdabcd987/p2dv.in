@@ -45,3 +45,31 @@ function watch(trID, url) {
         setTimeout(watch, 150, trID, url);
     })
 }
+
+// Update Contest Infomation
+function contest_watcher(url) {
+    var pending = $("#count-pending-battles");
+    var running = $("#count-running-battles");
+    var finished = $("#count-finished-battles");
+    $.getJSON(url, function(data) {
+        for (var i = 0; i < data.ais.length; ++i) {
+            var ai = data.ais[i];
+            var html = "";
+            html += '<td>' + ai.rank + '</td>';
+            html += '<td><a href="/ai/' + ai.ai_id + '">' + ai.name + '</a> of <small>' + ai.user + ' ('+ ai.idOfUser + ')</small></td>';
+            html += '<td class="success">' + ai.win + '</td>'
+            html += '<td class="warning">' + ai.draw + '</td>'
+            html += '<td class="danger">' + ai.lose + '</td>'
+            html += '<td>' + ai.score + '</td>'
+            html += '<td></td>'
+            $("#contest-row-" + ai.ai_id).html(html);
+        }
+        pending.html("" + data.recs.Pending);
+        running.html("" + data.recs.Running);
+        finished.html("" + data.recs.Finished);
+
+        if (data.recs.Running || data.recs.Pending) {
+            setTimeout(contest_watcher, 150, url);
+        }
+    })
+}

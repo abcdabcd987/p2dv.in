@@ -246,6 +246,7 @@ class Daemon:
             docs['contests'] = []
             docs['contests'].append({'where': {'_id':battle['contestId'], "ais.ai_id":ai0['_id']}, 'value': doc_contest_ai0})
             docs['contests'].append({'where': {'_id':battle['contestId'], "ais.ai_id":ai1['_id']}, 'value': doc_contest_ai1})
+            docs['contests'].append({'where': {'_id':battle['contestId']}, 'value': {'$inc': {'running': -1, 'finished': 1}}})
         self._updateDBs(docs)
 
         print "      Done!"

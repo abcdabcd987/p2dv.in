@@ -19,7 +19,7 @@ def send_git_pull(ip):
 
 def update_judge():
     servers = get_current_servers()
-    for k, v in target.items():
+    for k, v in servers.items():
         ip = v['main_ip']
         print('sending git pull to %s...' % ip)
         send_git_pull(ip)

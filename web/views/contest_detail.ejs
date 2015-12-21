@@ -1,0 +1,69 @@
+<% include head %>
+
+<% var isAdmin = settings.adminUsernames.indexOf(user.name) > -1; %>
+
+<h1>Contest <small><%= title %></small></h1>
+
+<table class="table table-hover table-striped">
+<thead>
+  <tr class="active">
+    <td>Rank</td>
+    <td>AI</td>
+    <td>Win</td>
+    <td>Draw</td>
+    <td>Lose</td>
+    <td>Score</td>
+    <td></td>
+  </tr>
+</thead>
+<tbody>
+<% for (var i = 0; i < ais.length; ++i) { %>
+<%   var rec = ais[i]; %>
+  <tr id="contest-row-<%= rec.ai_id %>">
+    <td><%= rec.rank %></td>
+    <td><a href="/ai/<%= rec.ai_id %>"><%= rec.name %></a> of <small><%= rec.user %> (<%= rec.idOfUser %>)</small></td>
+    <td class="success"><%= rec.win %></td>
+    <td class="warning"><%= rec.draw %></td>
+    <td class="danger"><%= rec.lose %></td>
+    <td><%= rec.score %></td>
+    <td><% if (isAdmin && submited != 'yes') { %><a href="/contest/<%= id %>/del/<%= rec._id %>">(Remove)</a><%}%></td>
+  </tr>
+<% } %>
+</tbody>
+</table>
+
+<dl class="dl-horizontal">
+  <dt>Pending Battles</dt><dd id="count-pending-battles"><%= recs.Pending %></dd>
+  <dt>Running Battles</dt><dd id="count-running-battles"><%= recs.Running %></dd>
+  <dt>Finished Battles</dt><dd id="count-finished-battles"><%= recs.Finished %></dd>
+</dl>
+
+<% if (isAdmin && submited != 'yes') { %>
+  <form class="form-horizontal" role="form" action="/contest/<%= id %>/submit" method="post">
+    <button type="submit" class="btn btn-danger" onclick="return confirm('CONFIRM?');"<% if (submited == 'yes') { %> disabled<% } %>>Submit Battles!</button>
+  </form>
+
+  <form class="form-horizontal" role="form" action="/contest/<%= id %>/add" method="post">
+    <h2>Add AI</h2>
+    <div class="form-group">
+      <label for="file" class="col-sm-2 control-label">AI List</label>
+      <div class="col-sm-10">
+        <textarea class="form-control" id="ais" name="ais" required rows="17"></textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary">Add!</button>
+      </div>
+    </div>
+  </form>
+<% } %>
+
+<% include foot_script %>
+<% if (recs.running || recs.Pending) { %>
+<script src="<%= settings.staticCDN %>/js/refresh_steps.js?20151221"></script>
+<script>
+contest_watcher("/contest/<%= id %>/status.json");
+</script>
+<% } %>
+<% include foot_close %>

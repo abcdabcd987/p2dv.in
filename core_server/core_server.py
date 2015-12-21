@@ -60,6 +60,8 @@ class TaskHandler(tornado.web.RequestHandler):
 
         if doc:
             db.records.update({'_id': doc['_id']}, {'$set':{'status':'Running'}})
+            if 'contestId' in doc and doc['contestId'] != ObjectId('000000000000000000000000'):
+                db.contests.update({'_id':doc['contestId']}, {'$inc': {'running': 1, 'pending': -1}})
             self.write(toJSON({ 'type': 'battle', 'doc': doc }))
             mutex.release()
             return

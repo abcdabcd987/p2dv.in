@@ -13,7 +13,7 @@ sudo locale-gen zh_CN.UTF-8
 sudo dpkg-reconfigure tzdata
 
 curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
-sudo apt-get install build-essential git python-pip python3-pip python-dev nodejs screen mongo-server vim nginx
+sudo apt-get install build-essential git python-pip python3-pip python-dev nodejs screen mongodb-server vim nginx
 sudo pip install tornado pymongo subprocess32
 sudo pip3 install tabulate requests
 sudo useradd -m -s /bin/bash p2dv
@@ -51,8 +51,11 @@ while true; do ./rating_updater.py; sleep 120; done
 
 # create mongodb index
 mongo p2dvin
-> db.ais.createIndex({status:1});
-> db.records.createIndex({status:1});
+> db.ais.ensureIndex({status:1});
+> db.records.ensureIndex({status:1});
+> db.records.ensureIndex({contestId:1});
+> db.records.ensureIndex({contestId:1, status:1});
+> db.contests.ensureIndex({_id:1, 'ais.ai_id': 1});
 ```
 
 ## Judge Server Setup Example
