@@ -46,6 +46,10 @@
       <dt>Result</dt><dd>Draw</dd>
     <% } %>
   <% } %>
+  <% var isAdmin = settings.adminUsernames.indexOf(user.name) > -1; %>
+  <% if (rec.status === 'Finished' && isAdmin && rec.contestId) { %>
+    <dt></dt><dd><a href="/battle/<%= rec._id %>/rejudge" onclick="return confirm('CONFIRM REJUDGE?');">Rejudge</a></dd>
+  <% } %>
 </dl>
 
 <% if (rec.status === 'Finished') { %>

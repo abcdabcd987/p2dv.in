@@ -4,6 +4,7 @@ var settings = require('../settings');
 var utility = require('./utility');
 var AI = require('../models/ai');
 var Record = require('../models/record');
+var Contest = require('../models/contest').Contest;
 var ObjectId = require('mongoose').Types.ObjectId;
 
 function get_text(id, text, res) {
@@ -133,3 +134,43 @@ exports.execStart = function(req, res) {
         })
     })
 }
+
+exports.execRejudge = function(req, res) {
+    var isAdmin = settings.adminUsernames.indexOf(req.session.user.name) > -1;
+    if (!isAdmin) {res.redirect('/'); }
+    var id = req.param('id');
+    Record.findOne({'_id': ObjectId(id)}, function(err, doc_record) {
+        if (!doc_record) {res.send('404 Not Found!'); return; }
+        if (!doc_record.contestId || doc_record.contestId == ObjectId("000000000000000000000000")) { res.send('contest not found'); return; }
+        if (doc_record.status != 'Finished') { res.send('battle not finished'); return; }
+
+        if (doc_record.result == 0) {
+            var update0 = {'$inc':{'ais.$.win': -1}};
+            var update1 = {'$inc':{'ais.$.lose': -1}};
+        } else if (doc_record.result == 1) {
+            var update0 = {'$inc':{'ais.$.lose': -1}};
+            var update1 = {'$inc':{'ais.$.win': -1}};
+        } else {
+            var update0 = {'$inc':{'ais.$.draw': -1}};
+            var update1 = {'$inc':{'ais.$.draw': -1}};
+        }
+
+        Contest.update({'_id': doc_record.contestId, 'ais.ai_id': doc_record.ids[0]}, update0, function(err) {
+            if (err) { res.send(err.toString()); return; }
+            Contest.update({'_id': doc_record.contestId, 'ais.ai_id': doc_record.ids[1]}, update1, function(err) {
+                if (err) { res.send(err.toString()); return; }
+                var update_contest = {$inc:{finished:-1, pending:1}};
+                Contest.update({_id: doc_record.contestId}, update_contest, function(err) {
+                    if (err) { res.send(err.toString()); return; }
+                    doc_record.result = -1;
+                    doc_record.status = 'Pending';
+                    doc_record.step = 0;
+                    doc_record.save(function(err) {
+                        if (err) { res.send(err.toString()); return; }
+                        return res.redirect('/battle/' + doc_record._id);
+                    })
+                })
+            })
+        })
+    });
+};

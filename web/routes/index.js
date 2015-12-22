@@ -31,6 +31,7 @@ exports.setup = function(app) {
     app.get ('/battle/:id-steps.json', battle.getSteps);
     app.get ('/battle/:id.json', battle.getJSON);
     app.get ('/battle/:id/:text.log', battle.getText);
+    app.get ('/battle/:id/rejudge', battle.execRejudge);
     app.get ('/battle/:id', battle.showDemo);
 
     app.get ('/contest/create', contest.showCreate);
