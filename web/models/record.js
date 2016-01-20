@@ -31,6 +31,7 @@ var schema = new Schema({
     stdout1: { type: String },
     stderr1: { type: String },
     judger: { type: String, default: '' },
+    contestId: { type: Schema.Types.ObjectId, default: Schema.Types.ObjectId("000000000000000000000000") },
     submitDate: { type: Date, default: Date.now },
     runDate : { type: Date, default: Date.now },
 });

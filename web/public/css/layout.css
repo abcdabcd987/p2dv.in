@@ -53,6 +53,18 @@ textarea, input[type="text"], input[type="password"] {
   border-top: 1px solid #e5e5e5;
 }
 
+.source-code {
+  font-size: 13px;
+  line-height: 15px;
+}
+
+.bg-black {
+  background-color: #444444;
+}
+
+.bg-red {
+  background-color: #562C27;
+}
 
 /* ==================== Chess Board ==================== */
 
@@ -81,17 +93,7 @@ textarea, input[type="text"], input[type="password"] {
 }
 
 .img-chess {
-  background-image: url(/images/chess_pieces.png);
-}
-
-.img-blank {
-  background-image: url(/images/chess_blank.png);
-}
-
-.img-blank, .img-chess {
-  background-repeat: no-repeat;
-  width: 65px;
-  height: 65px;
+  background-image: url(/images/chess.png);
 }
 
 .img-red-1 { background-position:    0px 0px; }
@@ -109,6 +111,10 @@ textarea, input[type="text"], input[type="password"] {
 .img-black-4 { background-position: -240px -60px; }
 .img-black-6 { background-position: -300px -60px; }
 .img-black-7 { background-position: -360px -60px; }
+
+.img-blank { background-position: -420px -60px; }
+
+
 
 #demo-text {
   line-height: 2em;

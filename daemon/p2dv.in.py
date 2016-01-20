@@ -1,13 +1,16 @@
 #!/usr/bin/python2.7
+# -*- coding: utf-8 -*-
 import os
 import time
 import json
+import signal
 import random
 import requests
 import tempfile
 from os import path
 from bson import json_util
 from datetime import datetime
+from bson.objectid import ObjectId
 
 import const
 from battle import Battle
@@ -83,7 +86,8 @@ class Daemon:
             try:
                 r = requests.post(const.CORE_SERVER + '/update', data={'data': toJSON(data), 'token': const.TOKEN}, timeout=const.REQUESTS_TIMEOUT)
                 return r.json()
-            except:
+            except Exception as e:
+                print(str(e))
                 print '_updateDBs fail.'
                 time.sleep(random.random())
 
@@ -91,7 +95,13 @@ class Daemon:
         return self._updateDBs({collection: [{'where': where, 'value': value}]})
 
     def Run(self):
-        while True:
+        if os.path.isfile('/tmp/daemon.lock'):
+            print 'Lock exist'
+            return
+        with open('/tmp/daemon.lock', 'w') as f:
+            f.write(str(os.getpid()))
+
+        while not sig_quit:
             task = self._getTask()
             if task['type'] == 'ai':
                 self._build(task['doc'])
@@ -100,9 +110,11 @@ class Daemon:
             else:
                 time.sleep(1)
 
+        os.remove('/tmp/daemon.lock')
+
     ###### Task 1: Unzip & Compile
     def _build(self, ai):
-        print '========== Found AI to be build: <', ai['user'], ',', ai['idOfUser'], '>, upload date: ', ai['uploadDate']
+        print '========== Found AI to be build: <', ai['user'].encode('utf-8'), ',', ai['idOfUser'], '>, upload date: ', ai['uploadDate']
         p = Prepare(ai).Run()
 
         ID = str(ai['_id'])
@@ -124,10 +136,10 @@ class Daemon:
                 os.chmod(absPath, 0755)
 
     def _battle(self, battle):
-        print '========== Found a battle: <', battle['user0'], ',', battle['idOfUser0'], '> vs <', battle['user1'], ', ', battle['idOfUser1'], '>'
+        print '========== Found a battle: <', battle['user0'].encode('utf-8'), ',', battle['idOfUser0'], '> vs <', battle['user1'].encode('utf-8'), ', ', battle['idOfUser1'], '>'
 
         # Mark Running
-        doc_rec = {'$set':{'status': 'Running'}}
+        doc_rec = {'$set':{'status': 'Running', 'judger': const.SERVER_NAME}}
         self._updateDB('records', {'_id':battle['_id']}, doc_rec)
 
         # Run battle
@@ -161,10 +173,11 @@ class Daemon:
             'stdin1' : result['stdin1'],
             'stdout1': result['stdout1'],
             'stderr1': result['stderr1'],
-            'judger' : const.SERVER_NAME
         }}
         doc_user0 = {'$inc': dict()}
         doc_user1 = {'$inc': dict()}
+        doc_contest_ai0 = { '$inc': dict() }
+        doc_contest_ai1 = { '$inc': dict() }
         if result['result'] == 2:
             # if draw
             doc_ai0['$inc'] = {'draw':1}
@@ -175,7 +188,9 @@ class Daemon:
                 doc_ai1['$set']['ratio'] = (ai1['win'])/float(ai1['win']+ai1['draw']+ai1['lose']+1)
                 doc_ai1['$inc'] = {'draw':1}
             else:
-                doc_user1 = None;
+                doc_user1 = None
+            doc_contest_ai0['$inc']['ais.$.draw'] = 1
+            doc_contest_ai1['$inc']['ais.$.draw'] = 1
         elif result['result'] == 1:
             # if ai1 won:
             doc_ai0['$inc'] = {'lose':1}
@@ -194,6 +209,8 @@ class Daemon:
             doc_rec['$set']['loserId']  = ai0['_id']
             doc_rec['$set']['winner'] = { 'name': result['user'][1], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
             doc_rec['$set']['loser']  = { 'name': result['user'][0], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
+            doc_contest_ai0['$inc']['ais.$.lose'] = 1
+            doc_contest_ai1['$inc']['ais.$.win'] = 1
         elif result['result'] == 0:
             # if ai0 won:
             doc_ai0['$inc'] = {'win' :1}
@@ -212,6 +229,8 @@ class Daemon:
             doc_rec['$set']['loserId']  = ai1['_id']
             doc_rec['$set']['winner'] = { 'name': result['user'][0], 'user': ai0['user'], 'idOfUser': ai0['idOfUser'] }
             doc_rec['$set']['loser']  = { 'name': result['user'][1], 'user': ai1['user'], 'idOfUser': ai1['idOfUser'] }
+            doc_contest_ai0['$inc']['ais.$.win'] = 1
+            doc_contest_ai1['$inc']['ais.$.lose'] = 1
         else:
             print "!!!!!!!! UNKNOWN RESULT !!!!!!!!"
 
@@ -223,9 +242,21 @@ class Daemon:
         if doc_user1:
             docs['users'].append({'where': {'name':ai1['user']}, 'value': doc_user1})
         docs['records'].append({'where': {'_id':battle['_id']}, 'value': doc_rec})
+        if 'contestId' in battle and battle['contestId'] != ObjectId('000000000000000000000000'):
+            docs['contests'] = []
+            docs['contests'].append({'where': {'_id':battle['contestId'], "ais.ai_id":ai0['_id']}, 'value': doc_contest_ai0})
+            docs['contests'].append({'where': {'_id':battle['contestId'], "ais.ai_id":ai1['_id']}, 'value': doc_contest_ai1})
+            docs['contests'].append({'where': {'_id':battle['contestId']}, 'value': {'$inc': {'running': -1, 'finished': 1}}})
         self._updateDBs(docs)
 
         print "      Done!"
+
+
+sig_quit = False
+def onSIGQUIT(signum, frame):
+    global sig_quit
+    sig_quit = True
+signal.signal(signal.SIGQUIT, onSIGQUIT)
 
 daemon = Daemon()
 daemon.Run()

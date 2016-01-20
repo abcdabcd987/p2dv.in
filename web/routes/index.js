@@ -1,6 +1,7 @@
 var ai = require('./ai');
 var user = require('./user');
 var battle = require('./battle');
+var contest = require('./contest');
 var utility = require('./utility');
 
 function showIndex(req, res) {
@@ -30,5 +31,14 @@ exports.setup = function(app) {
     app.get ('/battle/:id-steps.json', battle.getSteps);
     app.get ('/battle/:id.json', battle.getJSON);
     app.get ('/battle/:id/:text.log', battle.getText);
+    app.get ('/battle/:id/rejudge', battle.execRejudge);
     app.get ('/battle/:id', battle.showDemo);
+
+    app.get ('/contest/create', contest.showCreate);
+    app.post('/contest/create', contest.execCreate);
+    app.post('/contest/:id/add', contest.execAddAI);
+    app.get ('/contest/:id/del/:ai', contest.execDelAI);
+    app.post('/contest/:id/submit', contest.execSubmit);
+    app.get ('/contest/:id/status.json', contest.getStatus);
+    app.get ('/contest/:id', contest.showContest);
 }

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import json
 import time
@@ -51,6 +52,7 @@ class Battle:
             if steps == 'finished':
                 break
             self.updater(steps)
+            time.sleep(0.2)
 
         # Kill all
         if judge.poll() == None:

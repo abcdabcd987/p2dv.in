@@ -47,7 +47,7 @@ Demo = {
 	putChess: function putChess() {
 		for (var i = 0; i < 4; ++i) {
 			for (var j = 0; j < 8; ++j) {
-				Demo.getBox(i, j).attr('class', 'img-blank');
+				Demo.getBox(i, j).attr('class', 'img-chess img-blank');
 			}
 		}
 	},
@@ -57,7 +57,7 @@ Demo = {
 			return '';
 		}
 		if (chess[1] === true && Demo.hideChess === true) {
-			return 'img-blank';
+			return 'img-chess img-blank';
 		} else {
 			if (chess[0] === -7) {return 'img-chess img-black-7';}
 			if (chess[0] === -6) {return 'img-chess img-black-6';}
@@ -86,14 +86,18 @@ Demo = {
 	},
 
 	setupInvalidList: function setupInvalidList() {
-		// var ul = $('#invalid-list');
-		// for (var i = 0; i < Demo.data.step.length; ++i) {
-		//     var step = Demo.data.step[i];
-		//     if (!step.valid) {
-		//         var info = step.message || 'Invalid Operation! (No Details)';
-		//         ul.append('<li class="list-group-item"><strong>[Step ' + (i+1) + ']AI' + (step.player+1) + '</strong> ' + info + '</li>');
-		//     }
-		// }
+		var ul = $('#invalid-list');
+		if (Demo.data.err[0])
+			ul.append('<li class="list-group-item"><strong>AI0 Err:</strong> ' + Demo.data.err[0] + '</li>');
+		if (Demo.data.err[1])
+			ul.append('<li class="list-group-item"><strong>AI1 Err:</strong> ' + Demo.data.err[1] + '</li>');
+		for (var i = 0; i < Demo.data.step.length; ++i) {
+		    var step = Demo.data.step[i];
+		    if ('err' in step) {
+		        var info = step.err || 'Invalid Operation! (No Details)';
+		        ul.append('<li class="list-group-item"><strong>[Step ' + (i+1) + ']AI' + (i%2) + '</strong> ' + info + '</li>');
+		    }
+		}
 	},
 
 	getData: function getData() {
@@ -135,20 +139,23 @@ Demo = {
 		var i = Demo.playing;
 		var step = Demo.data.step[i];
 
-		if (step.player === 0) {
-			Demo.demoText.attr('class', 'bg-success');
+		if (i%2 === 0) {
+			Demo.demoText.attr('class', 'bg-red');
 		} else {
-			Demo.demoText.attr('class', 'bg-warning');
+			Demo.demoText.attr('class', 'bg-black');
 		}
 
 		if (Demo.playing === -1) {
 			Demo.demoText.html('<strong>initial chessboard</strong>');
 		}
 
-		if (step.posx == step.tox && step.posy == step.toy) {
-			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Reverse (' + step.posx + ',' + step.posy + ')');
+		if ('err' in step) {
+			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Error: ' + step.err);
+			Demo.demoText.attr('class', 'bg-warning');
+		} else if (step.posx == step.tox && step.posy == step.toy) {
+			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Flipped (' + step.posx + ',' + step.posy + ')');
 		} else {
-			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Move (' + step.posx + ',' + step.posy + ') to (' + step.tox + ',' + step.toy + ')');
+			Demo.demoText.html('<strong>[Step ' + (i+1) + ']AI' + (i % 2) + '</strong> Moved (' + step.posx + ',' + step.posy + ') to (' + step.tox + ',' + step.toy + ')');
 		}
 	},
 
@@ -191,25 +198,27 @@ Demo = {
 		}
 		oldBoard = [];
 		for (var i = 0; i < Demo.data.step.length; ++i) {
-			var x = Demo.data.step[i].posx;
-			var y = Demo.data.step[i].posy;
-			var xx = Demo.data.step[i].tox;
-			var yy = Demo.data.step[i].toy;
-			if (x == xx && y == yy) {
-				curBoard[x][y][1] = false;
-			} else {
-				curBoard[xx][yy] = Demo.cloneObject(curBoard[x][y]);
-				curBoard[x][y] = [0, false];
+			if (!('err' in Demo.data.step[i])) {
+				var x = Demo.data.step[i].posx;
+				var y = Demo.data.step[i].posy;
+				var xx = Demo.data.step[i].tox;
+				var yy = Demo.data.step[i].toy;
+				if (x == xx && y == yy) {
+					curBoard[x][y][1] = false;
+				} else {
+					curBoard[xx][yy] = Demo.cloneObject(curBoard[x][y]);
+					curBoard[x][y] = [0, false];
+				}
 			}
 			oldBoard.push(Demo.cloneObject(curBoard));
 		}
 
 		function set_ai_color_span(id, jdom) {
 			if (id == 0) jdom.attr('class', 'label label-danger').html('红');
-			else jdom.attr('class', 'label label-success').html('黑');
+			else jdom.attr('class', 'label bg-black').html('黑');
 		}
-		set_ai_color_span(Demo.data.id[0], $('#span-ai1-color'));
-		set_ai_color_span(Demo.data.id[1], $('#span-ai2-color'));
+		set_ai_color_span(Demo.data.id[0], $('#span-ai0-color'));
+		set_ai_color_span(Demo.data.id[1], $('#span-ai1-color'));
 	},
 
 	moveChess: function moveChess(sx, sy, tx, ty) {

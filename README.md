@@ -13,8 +13,9 @@ sudo locale-gen zh_CN.UTF-8
 sudo dpkg-reconfigure tzdata
 
 curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
-sudo apt-get install build-essential git python-pip python-dev nodejs screen mongo-server vim nginx
+sudo apt-get install build-essential git python-pip python3-pip python-dev nodejs screen mongodb-server vim nginx
 sudo pip install tornado pymongo subprocess32
+sudo pip3 install tabulate requests
 sudo useradd -m -s /bin/bash p2dv
 sudo passwd p2dv
 sudo vim /etc/nginx/sites-enabled/default
@@ -47,6 +48,14 @@ screen -S rating
 cd sjtu.cool/core_server/
 ./rating_updater.py init
 while true; do ./rating_updater.py; sleep 120; done
+
+# create mongodb index
+mongo p2dvin
+> db.ais.ensureIndex({status:1});
+> db.records.ensureIndex({status:1});
+> db.records.ensureIndex({contestId:1});
+> db.records.ensureIndex({contestId:1, status:1});
+> db.contests.ensureIndex({_id:1, 'ais.ai_id': 1});
 ```
 
 ## Judge Server Setup Example
@@ -69,10 +78,20 @@ mkdir data
 mkdir data/ai
 mkdir log
 
-# start daemon
+# either start daemon using screen
 screen -S daemon
 cd sjtu.cool/daemon/
 ./p2dv.in.py | tee ~/log/daemon-$(date +%Y-%m-%d_%H_%M_%S).log
+
+# or run at startup
+vim /etc/rc.local
+```
+
+### `rc.local` Example
+
+```
+su p2dv -c '/home/p2dv/sjtu.cool/daemon/rename_as_ip.sh'
+su p2dv -c 'cd /home/p2dv/sjtu.cool/daemon/; nohup ./p2dv.in.py > ~/log/daemon-$(date +%Y-%m-%d_%H_%M_%S).log 2>&1 &'
 ```
 
 ## Nginx Configuration Example
@@ -103,13 +122,13 @@ server {
 
 ## Credits of *p2dv.in*
 
-- AI Judge by `@juda`
+- AI Judge by `@juda`: [@juda/animal](https://github.com/juda/animal)
 - The whole system by `@abcdabcd987`
 
 ## Credits of *sjtu.cool*
 
 - Battle Demo by `@BreakVoid`
-- Sample AI by `@greatwall1995`
-- AI Judge by `@bywbilly`
-- IPC library by `@abcdabcd987`
+- Sample AI by `@greatwall1995`: [gist:chess_sample_ai.cc](https://gist.github.com/abcdabcd987/d6d284227f5c5953c857)
+- AI Judge by `@bywbilly`: [@abcdabcd987/ACM-2015-AI-Server](https://github.com/abcdabcd987/ACM-2015-AI-Server)
+- IPC library by `@abcdabcd987`: [@abcdabcd987/py-stdio-ipc](https://github.com/abcdabcd987/py-stdio-ipc)
 - Adaption from *p2dv.in* by `@abcdabcd987`
